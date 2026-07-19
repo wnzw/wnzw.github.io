@@ -280,6 +280,40 @@
             <!-- Alerts -->
             <div id="alert-box" class="xp-alert"></div>
 
+            <!-- GitHub Configuration Panel -->
+            <div id="github-config-panel" class="files-section" style="background-color: #f0f4f9; border: 1px solid #b0c4de; margin-top: 0; margin-bottom: 15px; padding: 10px 15px;">
+                <div class="files-section-header" style="margin-bottom: 0;">
+                    <span class="files-section-title" style="font-size: 12px; font-weight: bold; color: #003399;">⚙️ إعدادات المزامنة التلقائية مع GitHub</span>
+                    <button type="button" class="btn-xp btn-secondary" onclick="toggleGHConfig()" style="font-size: 10px; padding: 2px 6px;" id="btn-toggle-gh">عرض الإعدادات</button>
+                </div>
+                <div id="gh-config-inputs" style="display: none; margin-top: 10px; border-top: 1px solid #d0d0c0; padding-top: 10px;">
+                    <p style="font-size: 11px; color: #555; margin-bottom: 10px; line-height: 1.4;">
+                        أدخل تفاصيل مستودعك لتعديل ملف المشاريع وحفظه تلقائياً على استضافة GitHub دون تحميل أو استبدال يدوي للملفات. يتم حفظ هذه البيانات محلياً في متصفحك فقط وبشكل آمن.
+                    </p>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label style="font-size: 11px;">اسم المستخدم في GitHub:</label>
+                        <input type="text" id="gh-username" placeholder="مثال: developer-amjad" style="padding: 4px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label style="font-size: 11px;">اسم المستودع (Repository Name):</label>
+                        <input type="text" id="gh-repo" placeholder="مثال: my-website" style="padding: 4px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label style="font-size: 11px;">الفرع (Branch):</label>
+                        <input type="text" id="gh-branch" placeholder="main" value="main" style="padding: 4px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label style="font-size: 11px;">رمز الوصول الشخصي (GitHub PAT):</label>
+                        <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxx" style="padding: 4px;">
+                        <span style="font-size: 9px; color: #d32f2f; display: block; margin-top: 2px;">يجب تفعيل صلاحية (Contents: Write) للرمز ليتمكن من التعديل.</span>
+                    </div>
+                    <div style="display: flex; gap: 5px;">
+                        <button type="button" class="btn-xp btn-primary" onclick="saveGHConfig()" style="font-size: 10px; padding: 4px 10px;">حفظ إعدادات المزامنة</button>
+                        <button type="button" class="btn-xp btn-secondary" onclick="clearGHConfig()" style="font-size: 10px; padding: 4px 10px;">مسح الإعدادات</button>
+                    </div>
+                </div>
+            </div>
+
             <form id="project-form">
                 <div class="form-group">
                     <label for="proj-id">رمز التعريف للمشروع (باللغة الإنجليزية ودون مسافات):</label>
@@ -344,6 +378,77 @@
             window.PROJECTS_DATA = [];
         }
         let fileIndex = 0;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadGHConfig();
+        });
+
+        function toggleGHConfig() {
+            const inputs = document.getElementById('gh-config-inputs');
+            const btn = document.getElementById('btn-toggle-gh');
+            if (inputs.style.display === 'none') {
+                inputs.style.display = 'block';
+                btn.textContent = 'إخفاء الإعدادات';
+            } else {
+                inputs.style.display = 'none';
+                btn.textContent = 'عرض الإعدادات';
+            }
+        }
+
+        function saveGHConfig() {
+            const user = document.getElementById('gh-username').value.trim();
+            const repo = document.getElementById('gh-repo').value.trim();
+            const branch = document.getElementById('gh-branch').value.trim() || 'main';
+            const token = document.getElementById('gh-token').value.trim();
+
+            if (!user || !repo || !token) {
+                alert('يرجى تعبئة كافة الحقول لحفظ الإعدادات.');
+                return;
+            }
+
+            localStorage.setItem('gh_username', user);
+            localStorage.setItem('gh_repo', repo);
+            localStorage.setItem('gh_branch', branch);
+            localStorage.setItem('gh_token', token);
+
+            alert('تم حفظ إعدادات GitHub بنجاح في متصفحك!');
+            toggleGHConfig();
+            updateGHPanelStatus();
+        }
+
+        function clearGHConfig() {
+            localStorage.removeItem('gh_username');
+            localStorage.removeItem('gh_repo');
+            localStorage.removeItem('gh_branch');
+            localStorage.removeItem('gh_token');
+            
+            document.getElementById('gh-username').value = '';
+            document.getElementById('gh-repo').value = '';
+            document.getElementById('gh-branch').value = 'main';
+            document.getElementById('gh-token').value = '';
+            
+            alert('تم مسح إعدادات المزامنة.');
+            updateGHPanelStatus();
+        }
+
+        function loadGHConfig() {
+            document.getElementById('gh-username').value = localStorage.getItem('gh_username') || '';
+            document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
+            document.getElementById('gh-branch').value = localStorage.getItem('gh_branch') || 'main';
+            document.getElementById('gh-token').value = localStorage.getItem('gh_token') || '';
+            updateGHPanelStatus();
+        }
+
+        function updateGHPanelStatus() {
+            const user = localStorage.getItem('gh_username');
+            const repo = localStorage.getItem('gh_repo');
+            const panelTitle = document.querySelector('#github-config-panel .files-section-title');
+            if (user && repo) {
+                panelTitle.innerHTML = `🟢 متصل بمستودع GitHub (${user}/${repo})`;
+            } else {
+                panelTitle.innerHTML = `⚙️ إعدادات المزامنة التلقائية مع GitHub (غير مفعلة)`;
+            }
+        }
 
         function addFileField() {
             fileIndex++;
@@ -429,6 +534,107 @@
             document.getElementById('alert-box').style.display = 'none';
         }
 
+        function getProjects() {
+            const baseProjects = (typeof PROJECTS_DATA !== 'undefined' && Array.isArray(PROJECTS_DATA)) ? PROJECTS_DATA : [];
+            let customProjects = [];
+            try {
+                customProjects = JSON.parse(localStorage.getItem('custom_projects')) || [];
+            } catch (e) {}
+            return [...baseProjects, ...customProjects];
+        }
+
+        async function saveToGitHub(newProject) {
+            const username = localStorage.getItem('gh_username');
+            const repo = localStorage.getItem('gh_repo');
+            const branch = localStorage.getItem('gh_branch') || 'main';
+            const token = localStorage.getItem('gh_token');
+            
+            if (!username || !repo || !token) {
+                throw new Error('يرجى تهيئة إعدادات GitHub أولاً لحفظ التعديلات مباشرة على الاستضافة.');
+            }
+            
+            const path = 'projects-data.js';
+            const url = `https://api.github.com/repos/${username}/${repo}/contents/${path}`;
+            
+            showAlert('جاري جلب ملف المشاريع الحالي من مستودع GitHub...', 'info');
+            
+            const getRes = await fetch(`${url}?ref=${branch}`, {
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            
+            if (!getRes.ok) {
+                if (getRes.status === 404) {
+                    throw new Error(`الملف ${path} غير موجود في المستودع المحدد.`);
+                } else {
+                    const errData = await getRes.json();
+                    throw new Error(errData.message || 'فشل جلب الملف من مستودع GitHub. تأكد من صحة البيانات والرمز الصلاحيات.');
+                }
+            }
+            
+            const fileData = await getRes.json();
+            const currentSHA = fileData.sha;
+            
+            // Decode content from base64 safely (UTF-8)
+            const decodedContent = decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, ''))));
+            
+            // Extract the PROJECTS_DATA array
+            let projects = [];
+            try {
+                const startIdx = decodedContent.indexOf('[');
+                const endIdx = decodedContent.lastIndexOf(']') + 1;
+                const jsonStr = decodedContent.substring(startIdx, endIdx);
+                projects = JSON.parse(jsonStr);
+            } catch (e) {
+                // If parsing fails, fall back to current loaded PROJECTS_DATA
+                projects = (typeof PROJECTS_DATA !== 'undefined' && Array.isArray(PROJECTS_DATA)) ? PROJECTS_DATA : [];
+            }
+            
+            // Check for unique ID
+            if (projects.some(p => p.id === newProject.id)) {
+                throw new Error(`معرّف المشروع "${newProject.id}" مستخدم بالفعل في GitHub.`);
+            }
+            
+            projects.push(newProject);
+            
+            // Construct new file content
+            const newContent = `// قائمة مشاريع مستنداتي (My Documents Projects)
+// يمكنك تعديل المشاريع القائمة، حذفها، أو إضافة مشاريع جديدة هنا بسهولة!
+// سيقوم الموقع بتحديث العناصر تلقائياً بناءً على هذه البيانات.
+
+const PROJECTS_DATA = ${JSON.stringify(projects, null, 4)};
+`;
+            
+            // Encode content to base64 safely (UTF-8)
+            const encodedContent = btoa(unescape(encodeURIComponent(newContent)));
+            
+            showAlert('جاري رفع وتعديل الملف في مستودع GitHub (Commit)...', 'info');
+            
+            const putRes = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify({
+                    message: `إضافة مجلد جديد: ${newProject.title} (عبر لوحة التحكم)`,
+                    content: encodedContent,
+                    sha: currentSHA,
+                    branch: branch
+                })
+            });
+            
+            if (!putRes.ok) {
+                const errData = await putRes.json();
+                throw new Error(errData.message || 'فشل تعديل الملف على GitHub.');
+            }
+            
+            return true;
+        }
+
         async function submitProject() {
             const form = document.getElementById('project-form');
             if (!form.checkValidity()) {
@@ -481,48 +687,128 @@
 
             if (!filesValid) return;
 
+            // Construct new project object
+            const newProject = {
+                id,
+                title,
+                icon,
+                description,
+                technologies,
+                files
+            };
+
+            // 1. Try to save directly to GitHub if configured
+            const ghUser = localStorage.getItem('gh_username');
+            const ghRepo = localStorage.getItem('gh_repo');
+            const ghToken = localStorage.getItem('gh_token');
+
+            if (ghUser && ghRepo && ghToken) {
+                try {
+                    await saveToGitHub(newProject);
+                    
+                    // Clear custom projects in localStorage as it's now saved on GitHub
+                    localStorage.removeItem('custom_projects');
+
+                    showAlert('تهانينا! تم تعديل الملف وحفظه مباشرة على مستودع GitHub بنجاح! قد يستغرق تحديث الموقع دقيقة واحدة.', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2500);
+                    return;
+                } catch (ghErr) {
+                    showAlert(`فشلت المزامنة مع GitHub: ${ghErr.message}`, 'danger');
+                    // Show settings panel so they can check details
+                    const inputs = document.getElementById('gh-config-inputs');
+                    if (inputs.style.display === 'none') {
+                        toggleGHConfig();
+                    }
+                    return;
+                }
+            }
+
+            // 2. Fallback to File System Access API or LocalStorage/Download if GitHub is not configured
             try {
-                // 1. Validate unique ID
-                const exists = PROJECTS_DATA.some(p => p.id === id);
+                const allProjects = getProjects();
+                const exists = allProjects.some(p => p.id === id);
                 if (exists) {
                     showAlert(`خطأ: معرّف المشروع "${id}" مستخدم بالفعل، يرجى كتابة رمز تعريف آخر.`, 'danger');
                     return;
                 }
 
-                // 2. Construct new project object
-                const newProject = {
-                    id,
-                    title,
-                    icon,
-                    description,
-                    technologies,
-                    files
-                };
+                // Check if File System Access API is supported
+                if (typeof window.showOpenFilePicker === 'undefined') {
+                    console.log("File System Access API not supported, falling back.");
+                    
+                    let localProjects = [];
+                    try {
+                        localProjects = JSON.parse(localStorage.getItem('custom_projects')) || [];
+                    } catch (e) {}
+                    localProjects.push(newProject);
+                    localStorage.setItem('custom_projects', JSON.stringify(localProjects));
 
-                // 3. Append to loaded projects data
-                PROJECTS_DATA.push(newProject);
+                    const mergedProjects = [...((typeof PROJECTS_DATA !== 'undefined' && Array.isArray(PROJECTS_DATA)) ? PROJECTS_DATA : []), ...localProjects];
+                    const fallbackContent = `// قائمة مشاريع مستنداتي (My Documents Projects)
+// يمكنك تعديل المشاريع القائمة، حذفها، أو إضافة مشاريع جديدة هنا بسهولة!
+// سيقوم الموقع بتحديث العناصر تلقائياً بناءً على هذه البيانات.
 
-                // 4. Format projects data file contents
+const PROJECTS_DATA = ${JSON.stringify(mergedProjects, null, 4)};
+`;
+
+                    const blob = new Blob([fallbackContent], { type: "application/javascript;charset=utf-8" });
+                    const link = document.createElement("a");
+                    link.href = URL.createObjectURL(blob);
+                    link.download = "projects-data.js";
+                    link.click();
+
+                    showAlert('لم يتم تهيئة إعدادات GitHub. تم حفظ المجلد محلياً وتنزيل ملف التحديث.', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2500);
+                    return;
+                }
+
+                // File System Access API
+                showAlert('لم يتم تهيئة إعدادات GitHub. يرجى تحديد ملف "projects-data.js" لحفظ التعديل بداخله مباشرة على جهازك...', 'info');
+
+                const [fileHandle] = await window.showOpenFilePicker({
+                    suggestedName: 'projects-data.js',
+                    types: [{
+                        description: 'JavaScript Files',
+                        accept: {
+                            'application/javascript': ['.js']
+                        }
+                    }],
+                    excludeAcceptAllOption: true,
+                    multiple: false
+                });
+
+                const writable = await fileHandle.createWritable();
+                const baseProjects = (typeof PROJECTS_DATA !== 'undefined' && Array.isArray(PROJECTS_DATA)) ? PROJECTS_DATA : [];
+                baseProjects.push(newProject);
+                
                 const fileContent = `// قائمة مشاريع مستنداتي (My Documents Projects)
 // يمكنك تعديل المشاريع القائمة، حذفها، أو إضافة مشاريع جديدة هنا بسهولة!
 // سيقوم الموقع بتحديث العناصر تلقائياً بناءً على هذه البيانات.
 
-const PROJECTS_DATA = ${JSON.stringify(PROJECTS_DATA, null, 4)};
+const PROJECTS_DATA = ${JSON.stringify(baseProjects, null, 4)};
 `;
 
-                // 5. Trigger browser file download of projects-data.js
-                const blob = new Blob([fileContent], { type: "application/javascript;charset=utf-8" });
-                const link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
-                link.download = "projects-data.js";
-                link.click();
+                await writable.write(fileContent);
+                await writable.close();
 
-                showAlert('تهانينا! تمت إضافة المجلد الجديد مع ملفاته وتوليد ملف التحديث بنجاح! يرجى نقل ملف "projects-data.js" الذي تم تنزيله الآن واستبداله بالملف القديم في مجلد موقعك لتحديث المعرض.', 'success');
+                localStorage.removeItem('custom_projects');
+
+                showAlert('تهانينا! تم تحديث ملف المشاريع (projects-data.js) مباشرة على جهازك بنجاح! جاري العودة...', 'success');
                 
-                // Reset form after a small delay
-                setTimeout(resetForm, 2500);
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
             } catch (err) {
-                showAlert(`حدث خطأ أثناء حفظ الملف: ${err.message}`, 'danger');
+                if (err.name === 'AbortError') {
+                    showAlert('تم إلغاء العملية ولم يتم حفظ التعديلات.', 'danger');
+                } else {
+                    showAlert(`حدث خطأ أثناء الحفظ: ${err.message}`, 'danger');
+                }
             }
         }
     </script>

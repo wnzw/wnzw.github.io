@@ -7,6 +7,24 @@ let windowStates = {}; // Stores position and sizes of windows for restoring
 let currentFolderId = null; // null means root of My Documents
 let defaultCVText = "";
 
+function getProjects() {
+    const baseProjects = (typeof PROJECTS_DATA !== 'undefined' && Array.isArray(PROJECTS_DATA)) ? PROJECTS_DATA : [];
+    let customProjects = [];
+    try {
+        customProjects = JSON.parse(localStorage.getItem('custom_projects')) || [];
+    } catch (e) {
+        console.error("Error reading custom projects from localStorage", e);
+    }
+    return [...baseProjects, ...customProjects];
+}
+
+function resetLocalProjects() {
+    if (confirm("هل أنت متأكد من رغبتك في حذف جميع المجلدات المضافة محلياً؟")) {
+        localStorage.removeItem('custom_projects');
+        renderProjects();
+    }
+}
+
 function openDefaultNotepad() {
     const notepadText = document.getElementById('notepad-text');
     const notepadWin = document.getElementById('win-notepad');
@@ -330,8 +348,8 @@ function updateClock() {
 
 // 6. Project Viewer (My Documents)
 function openProject(id) {
-    if (typeof PROJECTS_DATA === 'undefined') return;
-    const project = PROJECTS_DATA.find(p => p.id === id);
+    const allProjects = getProjects();
+    const project = allProjects.find(p => p.id === id);
     if (!project) return;
     
     const panel = document.getElementById('project-detail-panel');
@@ -370,14 +388,14 @@ function renderProjects() {
     
     grid.innerHTML = '';
     
-    if (typeof PROJECTS_DATA === 'undefined' || !Array.isArray(PROJECTS_DATA)) return;
+    const allProjects = getProjects();
     
     if (currentFolderId === null) {
         // We are at root level (display project folders)
         if (btnDocUp) btnDocUp.disabled = true;
         if (docCurrentPath) docCurrentPath.textContent = 'مستنداتي';
         
-        PROJECTS_DATA.forEach(proj => {
+        allProjects.forEach(proj => {
             const item = document.createElement('div');
             item.className = 'file-item';
             item.tabIndex = 0;
@@ -419,11 +437,11 @@ function renderProjects() {
         });
         
         if (statusLeft) {
-            statusLeft.textContent = `عدد العناصر: ${PROJECTS_DATA.length} مجلدات`;
+            statusLeft.textContent = `عدد العناصر: ${allProjects.length} مجلدات`;
         }
     } else {
         // We are inside a project folder (display sub-files)
-        const project = PROJECTS_DATA.find(p => p.id === currentFolderId);
+        const project = allProjects.find(p => p.id === currentFolderId);
         if (!project) return;
         
         if (btnDocUp) btnDocUp.disabled = false;
