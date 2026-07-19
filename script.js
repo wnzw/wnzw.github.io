@@ -6,7 +6,6 @@ let zIndexCounter = 100;
 let windowStates = {}; // Stores position and sizes of windows for restoring
 let currentFolderId = null; // null means root of My Documents
 let defaultCVText = "";
-let PROJECTS_DATA = [];
 
 function openDefaultNotepad() {
     const notepadText = document.getElementById('notepad-text');
