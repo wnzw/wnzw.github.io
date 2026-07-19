@@ -10,5 +10,5 @@ const SITE_SETTINGS = {
     "os_name": "Passion OS v2026",
     "cpu": "ذهن بشري متكامل (Human Brain) @ 3.80GHz",
     "ram": "16.0 جيجابايت من العزيمة والإصرار",
-    "wallpaper": "#3a6ea5"
+    "wallpaper": "bliss_wallpaper.jpg"
 };
