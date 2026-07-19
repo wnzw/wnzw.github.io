@@ -2,7 +2,16 @@
 // يمكنك تعديل المشاريع القائمة، حذفها، أو إضافة مشاريع جديدة هنا بسهولة!
 // سيقوم الموقع بتحديث العناصر تلقائياً بناءً على هذه البيانات.
 
-const PROJECTS_DATA = [];
+const PROJECTS_DATA = [
+    {
+        "id": "GEWGE",
+        "title": "GEGEGEG",
+        "icon": "📁",
+        "description": "GEGEGE",
+        "technologies": "EGGE",
+        "files": []
+    }
+];
 
 const SITE_SETTINGS = {
     "username": "KAL",
