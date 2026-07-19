@@ -87,6 +87,31 @@ function loadSiteSettings() {
             desktopEl.style.backgroundColor = settings.wallpaper;
         }
     }
+    
+    // Apply CV Text
+    if (settings.cv_text) {
+        defaultCVText = settings.cv_text;
+        const notepadText = document.getElementById('notepad-text');
+        if (notepadText) notepadText.value = settings.cv_text;
+    }
+    
+    // Apply IE Links
+    const ieLinksContainer = document.getElementById('ie-links-container');
+    if (ieLinksContainer && settings.ie_links) {
+        ieLinksContainer.innerHTML = '';
+        settings.ie_links.forEach(link => {
+            const a = document.createElement('a');
+            a.href = link.url;
+            a.target = '_blank';
+            a.className = 'ie-card';
+            a.innerHTML = `
+                <span class="ie-card-icon">${link.icon || '🔗'}</span>
+                <h3>${link.title}</h3>
+                <p>${link.desc}</p>
+            `;
+            ieLinksContainer.appendChild(a);
+        });
+    }
 }
 
 function openDefaultNotepad() {
@@ -111,6 +136,22 @@ function openNotepadWithFile(name, content) {
     notepadText.value = content;
     
     openWindow('win-notepad');
+}
+
+function openDownloadFile(name, urlOrContent) {
+    if (urlOrContent.startsWith('http://') || urlOrContent.startsWith('https://')) {
+        const link = document.createElement("a");
+        link.href = urlOrContent;
+        link.download = name;
+        link.target = "_blank";
+        link.click();
+    } else {
+        const blob = new Blob([urlOrContent], { type: "application/octet-stream" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = name;
+        link.click();
+    }
 }
 
 function openImageViewer(name, url) {
@@ -435,6 +476,8 @@ function getFileDetails(filename, content) {
         return { icon: '🖼️', action: openImageViewer };
     } else if (['mp3', 'wav', 'ogg'].includes(ext)) {
         return { icon: '🎵', action: openMediaPlayer };
+    } else if (['zip', 'rar', 'pdf', 'docx', 'xlsx', 'pptx', 'exe', 'dmg', 'tar', 'gz'].includes(ext)) {
+        return { icon: '📥', action: openDownloadFile };
     } else if (['lnk', 'html', 'url'].includes(ext) || (content && (content.startsWith('http://') || content.startsWith('https://')))) {
         return { icon: '🔗', action: openIEWithURL };
     } else {
