@@ -109,8 +109,8 @@ function loadSiteSettings() {
                 <h3>${link.title}</h3>
                 <p>${link.desc}</p>
             `;
-            ieLinksContainer.appendChild(a);
         });
+    }
     
     // Apply Desktop apps configuration (Labels, Window titles, Page headers)
     let defaultApps = {
