@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معرض أعمالي - ويندوز XP</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Desktop Area -->
+    <div id="desktop" class="desktop">
+        <!-- Desktop Grid of Icons -->
+        <div class="desktop-icons">
+            <div class="desktop-icon" id="icon-computer" tabindex="0">
+                <svg viewBox="0 0 48 48" class="icon-svg">
+                    <!-- Retro My Computer SVG -->
+                    <rect x="6" y="6" width="36" height="24" rx="2" fill="#1E88E5" stroke="#0D47A1" stroke-width="2"/>
+                    <rect x="8" y="8" width="32" height="20" fill="#90CAF9"/>
+                    <polygon points="18,30 30,30 34,38 14,38" fill="#B0BEC5" stroke="#37474F" stroke-width="2"/>
+                    <rect x="12" y="38" width="24" height="4" fill="#37474F"/>
+                    <!-- Inside Screen Details -->
+                    <rect x="10" y="10" width="8" height="6" fill="#1565C0"/>
+                    <line x1="20" y1="12" x2="36" y2="12" stroke="#ffffff" stroke-width="2"/>
+                    <line x1="20" y1="18" x2="32" y2="18" stroke="#ffffff" stroke-width="2"/>
+                </svg>
+                <span class="icon-label">جهازي (My Computer)</span>
+            </div>
+
+            <div class="desktop-icon" id="icon-documents" tabindex="0">
+                <svg viewBox="0 0 48 48" class="icon-svg">
+                    <!-- Retro My Documents SVG Folder -->
+                    <path d="M4,10 L18,10 L24,16 L44,16 L44,40 L4,40 Z" fill="#FFA726" stroke="#E65100" stroke-width="2"/>
+                    <path d="M4,16 L44,16 L44,40 L4,40 Z" fill="#FFB74D"/>
+                    <rect x="12" y="22" width="24" height="12" fill="#FFE0B2" rx="1"/>
+                    <line x1="16" y1="26" x2="32" y2="26" stroke="#F57C00" stroke-width="2"/>
+                    <line x1="16" y1="30" x2="28" y2="30" stroke="#F57C00" stroke-width="2"/>
+                </svg>
+                <span class="icon-label">مستنداتي (My Documents)</span>
+            </div>
+
+            <div class="desktop-icon" id="icon-notepad" tabindex="0">
+                <svg viewBox="0 0 48 48" class="icon-svg">
+                    <!-- Retro Notepad SVG -->
+                    <rect x="8" y="4" width="32" height="40" rx="3" fill="#ECEFF1" stroke="#37474F" stroke-width="2"/>
+                    <rect x="8" y="4" width="32" height="8" rx="1" fill="#78909C" stroke="#37474F" stroke-width="2"/>
+                    <!-- Notepad rings -->
+                    <circle cx="14" cy="8" r="2" fill="#ECEFF1"/>
+                    <circle cx="24" cy="8" r="2" fill="#ECEFF1"/>
+                    <circle cx="34" cy="8" r="2" fill="#ECEFF1"/>
+                    <!-- Lines of text -->
+                    <line x1="14" y1="18" x2="34" y2="18" stroke="#90A4AE" stroke-width="2"/>
+                    <line x1="14" y1="24" x2="34" y2="24" stroke="#90A4AE" stroke-width="2"/>
+                    <line x1="14" y1="30" x2="34" y2="30" stroke="#90A4AE" stroke-width="2"/>
+                    <line x1="14" y1="36" x2="26" y2="36" stroke="#90A4AE" stroke-width="2"/>
+                </svg>
+                <span class="icon-label">السيرة الذاتية (Notepad)</span>
+            </div>
+
+            <div class="desktop-icon" id="icon-ie" tabindex="0">
+                <svg viewBox="0 0 48 48" class="icon-svg">
+                    <!-- IE-like Blue 'e' with golden orbital ring -->
+                    <ellipse cx="24" cy="24" rx="12" ry="18" fill="none" stroke="#FFD54F" stroke-width="5" transform="rotate(-30 24 24)"/>
+                    <path d="M38,20 C38,10 28,6 20,9 C12,12 8,22 12,30 C16,38 28,42 36,36 C42,31 42,22 32,22 L12,22" fill="none" stroke="#1565C0" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="icon-label">المتصفح (Internet Explorer)</span>
+            </div>
+
+            <div class="desktop-icon" id="icon-minesweeper" tabindex="0">
+                <svg viewBox="0 0 48 48" class="icon-svg">
+                    <!-- Mine/Minesweeper SVG -->
+                    <rect x="4" y="4" width="40" height="40" rx="4" fill="#CFD8DC" stroke="#37474F" stroke-width="2"/>
+                    <circle cx="24" cy="24" r="10" fill="#263238"/>
+                    <!-- Spikes -->
+                    <line x1="24" y1="8" x2="24" y2="40" stroke="#263238" stroke-width="4"/>
+                    <line x1="8" y1="24" x2="40" y2="24" stroke="#263238" stroke-width="4"/>
+                    <line x1="12" y1="12" x2="36" y2="36" stroke="#263238" stroke-width="4"/>
+                    <line x1="12" y1="36" x2="36" y2="12" stroke="#263238" stroke-width="4"/>
+                    <!-- Red dot on mine -->
+                    <circle cx="21" cy="21" r="3" fill="#D32F2F"/>
+                </svg>
+                <span class="icon-label">كنس الألغام (Minesweeper)</span>
+            </div>
+        </div>
+
+        <!-- Windows Container -->
+        <div id="window-container">
+            <!-- 1. My Computer Window -->
+            <div class="window active-window" id="win-computer" style="top: 50px; left: 80px; width: 500px;">
+                <div class="title-bar">
+                    <div class="title-bar-text">
+                        <img class="window-mini-icon" src="data:image/svg+xml;utf8,<svg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'><rect x='6' y='6' width='36' height='24' rx='2' fill='%231E88E5' stroke='%230D47A1' stroke-width='2'/><rect x='8' y='8' width='32' height='20' fill='%2390CAF9'/><polygon points='18,30 30,30 34,38 14,38' fill='%23B0BEC5' stroke='%2337474F' stroke-width='2'/></svg>" alt="">
+                        جهازي (My Computer)
+                    </div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" class="btn-min"></button>
+                        <button aria-label="Maximize" class="btn-max"></button>
+                        <button aria-label="Close" class="btn-close"></button>
+                    </div>
+                </div>
+                <!-- Menu bar -->
+                <div class="menu-bar">
+                    <div class="menu-item">ملف</div>
+                    <div class="menu-item">تعديل</div>
+                    <div class="menu-item">عرض</div>
+                    <div class="menu-item">أدوات</div>
+                    <div class="menu-item">تعليمات</div>
+                </div>
+                <!-- Content area -->
+                <div class="window-body">
+                    <div class="info-layout">
+                        <div class="sidebar-xp">
+                            <div class="sidebar-header">مهام النظام</div>
+                            <div class="sidebar-links">
+                                <a href="#" class="sidebar-link">عرض معلومات النظام</a>
+                                <a href="#" class="sidebar-link">إضافة/إزالة البرامج</a>
+                                <a href="#" class="sidebar-link">تغيير إعدادات التحكم</a>
+                            </div>
+                        </div>
+                        <div class="main-content">
+                            <h3>المعالج والنظام</h3>
+                            <div class="xp-device-row">
+                                <div class="device-icon">💻</div>
+                                <div class="device-details">
+                                    <strong>نظام التشغيل:</strong> Passion OS v2026<br>
+                                    <strong>المعالج:</strong> ذهن بشري متكامل (Human Brain) @ 3.80GHz<br>
+                                    <strong>الذاكرة العشوائية (RAM):</strong> 16.0 جيجابايت من العزيمة والإصرار
+                                </div>
+                            </div>
+                            <hr class="xp-hr">
+                            <h3>الأقراص ومساحات التخزين</h3>
+                            <div class="xp-drives">
+                                <div class="drive-item">
+                                    <div class="drive-icon-big">💾</div>
+                                    <div class="drive-text">
+                                        <strong>القرص المحلي (C:)</strong>
+                                        <div class="drive-bar"><div class="fill" style="width: 85%;"></div></div>
+                                        <span class="drive-label">120 جيجابايت متوفرة من 150 جيجابايت</span>
+                                    </div>
+                                </div>
+                                <div class="drive-item">
+                                    <div class="drive-icon-big">💿</div>
+                                    <div class="drive-text">
+                                        <strong>محرك الأقراص (D:)</strong>
+                                        <span class="drive-label">القرص فارغ (شغف التعلّم)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-bar">
+                    <span class="status-left">تم فحص النظام بنجاح.</span>
+                    <span class="status-right">حاسوبي الشخصي</span>
+                </div>
+            </div>
+
+            <!-- 2. My Documents Window -->
+            <div class="window" id="win-documents" style="top: 80px; left: 120px; width: 550px; display: none;">
+                <div class="title-bar">
+                    <div class="title-bar-text">
+                        <img class="window-mini-icon" src="data:image/svg+xml;utf8,<svg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'><path d='M4,10 L18,10 L24,16 L44,16 L44,40 L4,40 Z' fill='%23FFA726' stroke='%23E65100' stroke-width='2'/></svg>" alt="">
+                        مستنداتي (My Documents)
+                    </div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" class="btn-min"></button>
+                        <button aria-label="Maximize" class="btn-max"></button>
+                        <button aria-label="Close" class="btn-close"></button>
+                    </div>
+                </div>
+                <div class="menu-bar">
+                    <div class="menu-item">ملف</div>
+                    <div class="menu-item">تعديل</div>
+                    <div class="menu-item">عرض</div>
+                    <div class="menu-item">المفضلة</div>
+                    <div class="menu-item">تعليمات</div>
+                </div>
+                <!-- Explorer Toolbar -->
+                <div class="explorer-toolbar">
+                    <button class="toolbar-btn" id="btn-doc-up" disabled>
+                        <span class="btn-icon">▲</span> للأعلى
+                    </button>
+                    <div class="toolbar-divider"></div>
+                    <div class="address-bar-xp">
+                        <span class="address-label-xp">العنوان:</span>
+                        <div class="address-input-container">
+                            <span class="address-icon">📂</span>
+                            <span id="doc-current-path" class="address-text-xp">مستنداتي</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="window-body">
+                    <div class="info-layout">
+                        <div class="sidebar-xp">
+                            <div class="sidebar-header">مهام الملفات</div>
+                            <div class="sidebar-links">
+                                <a href="#" class="sidebar-link">إنشاء مجلد جديد</a>
+                                <a href="#" class="sidebar-link">نشر هذا المجلد على الويب</a>
+                                <a href="#" class="sidebar-link">مشاركة المجلد</a>
+                            </div>
+                        </div>
+                        <div class="main-content">
+                            <h3>المشاريع البرمجية المنجزة</h3>
+                            <p class="section-desc">انقر مرتين على أي مجلد لاستعراض تفاصيل المشروع.</p>
+                            <div id="projects-grid" class="xp-file-grid">
+                                <!-- سيتم توليد العناصر هنا ديناميكياً بواسطة JavaScript -->
+                            </div>
+                            <div id="project-detail-panel" class="xp-detail-box" style="display:none;">
+                                <h4 id="proj-title">اسم المشروع</h4>
+                                <p id="proj-desc">وصف المشروع والتقنيات المستخدمة.</p>
+                                <span class="xp-badge" id="proj-badge">التقنيات: React, Node.js, Express</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-bar">
+                    <span class="status-left" id="documents-status-left">عدد العناصر: 0 عناصر</span>
+                    <span class="status-right">المحلي</span>
+                </div>
+            </div>
+
+            <!-- 3. Notepad (CV) Window -->
+            <div class="window" id="win-notepad" style="top: 110px; left: 160px; width: 600px; display: none;">
+                <div class="title-bar">
+                    <div class="title-bar-text">
+                        <img class="window-mini-icon" src="data:image/svg+xml;utf8,<svg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'><rect x='8' y='4' width='32' height='40' rx='3' fill='%23ECEFF1' stroke='%2337474F' stroke-width='2'/></svg>" alt="">
+                        السيرة_الذاتية.txt - مفكرة
+                    </div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" class="btn-min"></button>
+                        <button aria-label="Maximize" class="btn-max"></button>
+                        <button aria-label="Close" class="btn-close"></button>
+                    </div>
+                </div>
+                <div class="menu-bar">
+                    <div class="menu-item" onclick="saveNotepadText()">حفظ (تنزيل)</div>
+                    <div class="menu-item" onclick="window.print()">طباعة</div>
+                </div>
+                <div class="window-body no-padding" style="height: 350px;">
+                    <textarea class="notepad-textarea" id="notepad-text" spellcheck="false" readonly>
+==================================================
+الاسم: مبرمج ومطور مواقع محترف
+التخصص: مطور واجهات أمامية وخلفية (Full-Stack Developer)
+العنوان: الرياض، المملكة العربية السعودية
+==================================================
+
+[الخبرات المهنية]
+• مطور ويب أول - شركة الحلول التقنية (2024 - الآن)
+  - تطوير وتحسين أداء التطبيقات بنسبة 40%.
+  - قيادة فريق التطوير لبناء لوحة تحكم ذكية متكاملة.
+
+• مطور واجهات أمامية - ويب تيك (2022 - 2024)
+  - بناء مواقع متجاوبة وسريعة تلبي تجربة المستخدم المثالية.
+
+[المهارات الفنية]
+- اللغات الأساسية: HTML5, CSS3, JavaScript (ES6+), SQL
+- أطر العمل: React, Next.js, Node.js, Express
+- قواعد البيانات: MongoDB, PostgreSQL, MySQL
+- أدوات التطوير: Git, Docker, Webpack
+
+[الشهادات الأكاديمية]
+- بكالوريوس في علوم الحاسب والمعلومات
+- شهادة مطور ويب معتمد من Udacity
+
+[أهداف مهنية]
+أسعى لبناء تطبيقات ويب مبتكرة وعالية الأداء تعزز من تجارب المستخدمين وتدعم التحول الرقمي.
+
+ملاحظة: يمكنك الضغط على "حفظ" لتحميل نسخة من السيرة الذاتية لجهازك!
+                    </textarea>
+                </div>
+                <div class="status-bar">
+                    <span class="status-left">سطر 1، عمود 1</span>
+                    <span class="status-right">ترميز: UTF-8</span>
+                </div>
+            </div>
+
+            <!-- 4. Internet Explorer Window -->
+            <div class="window" id="win-ie" style="top: 140px; left: 200px; width: 650px; display: none;">
+                <div class="title-bar">
+                    <div class="title-bar-text">
+                        <img class="window-mini-icon" src="data:image/svg+xml;utf8,<svg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'><path d='M38,20 C38,10 28,6 20,9' fill='none' stroke='%231565C0' stroke-width='7'/></svg>" alt="">
+                        عن المطور - Internet Explorer
+                    </div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" class="btn-min"></button>
+                        <button aria-label="Maximize" class="btn-max"></button>
+                        <button aria-label="Close" class="btn-close"></button>
+                    </div>
+                </div>
+                <!-- IE Address Bar Area -->
+                <div class="ie-toolbar">
+                    <div class="ie-nav-buttons">
+                        <button class="ie-btn" disabled>السابق ◀</button>
+                        <button class="ie-btn" disabled>التالي ▶</button>
+                        <button class="ie-btn">تحديث ↻</button>
+                        <button class="ie-btn">الرئيسية 🏠</button>
+                    </div>
+                    <div class="ie-address-container">
+                        <span class="ie-address-label">العنوان:</span>
+                        <input type="text" class="ie-address-input" value="https://github.com/developer-amjad" readonly>
+                    </div>
+                </div>
+                <div class="window-body no-padding" style="background: #fff; height: 380px; overflow-y: auto;">
+                    <!-- Embedded simulated page -->
+                    <div class="ie-content">
+                        <div class="ie-header">
+                            <h1>بوابة التواصل والشبكات الاجتماعية</h1>
+                            <p>أهلاً بك في صفحتي الشخصية عبر متصفح Internet Explorer الكلاسيكي!</p>
+                        </div>
+                        <div class="ie-links-grid">
+                            <a href="https://github.com" target="_blank" class="ie-card">
+                                <span class="ie-card-icon">🐙</span>
+                                <h3>GitHub</h3>
+                                <p>استعرض أكوادي ومشاريعي البرمجية المفتوحة المصدر.</p>
+                            </a>
+                            <a href="https://linkedin.com" target="_blank" class="ie-card">
+                                <span class="ie-card-icon">💼</span>
+                                <h3>LinkedIn</h3>
+                                <p>تواصل معي مهنياً واطلع على مسيرتي الأكاديمية والمهنية.</p>
+                            </a>
+                            <a href="mailto:email@example.com" class="ie-card">
+                                <span class="ie-card-icon">✉️</span>
+                                <h3>بريد إلكتروني</h3>
+                                <p>راسلني لمناقشة فرص العمل، المشاريع، أو التعاون المشترك.</p>
+                            </a>
+                            <a href="https://twitter.com" target="_blank" class="ie-card">
+                                <span class="ie-card-icon">🐦</span>
+                                <h3>X (تويتر سابقاً)</h3>
+                                <p>تابع أفكاري وتغريداتي حول البرمجة والتقنية الحديثة.</p>
+                            </a>
+                        </div>
+                        <div class="ie-footer">
+                            <span class="ie-status-indicator">🔐 تم الاتصال بشكل آمن عبر بروتوكول HTTPS</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-bar">
+                    <span class="status-left">جاهز</span>
+                    <span class="status-right">شبكة الاتصال المحلية</span>
+                </div>
+            </div>
+
+            <!-- 5. Minesweeper Window -->
+            <div class="window" id="win-minesweeper" style="top: 160px; left: 240px; width: 320px; display: none;">
+                <div class="title-bar">
+                    <div class="title-bar-text">
+                        <img class="window-mini-icon" src="data:image/svg+xml;utf8,<svg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'><circle cx='24' cy='24' r='10' fill='%23263238'/></svg>" alt="">
+                        كنس الألغام (Minesweeper)
+                    </div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" class="btn-min"></button>
+                        <button aria-label="Maximize" class="btn-max"></button>
+                        <button aria-label="Close" class="btn-close"></button>
+                    </div>
+                </div>
+                <div class="menu-bar">
+                    <div class="menu-item" onclick="initMinesweeper(9, 9, 10)">مبتدئ (9x9)</div>
+                    <div class="menu-item" onclick="initMinesweeper(12, 12, 20)">متوسط (12x12)</div>
+                </div>
+                <div class="window-body" style="background: #bdbdbd; text-align: center;">
+                    <!-- Game Dashboard -->
+                    <div class="minesweeper-dash">
+                        <div class="ms-counter" id="ms-mine-count">010</div>
+                        <button class="ms-smiley" id="ms-smiley-btn">😀</button>
+                        <div class="ms-counter" id="ms-timer">000</div>
+                    </div>
+                    <!-- Game Grid -->
+                    <div class="minesweeper-border">
+                        <div id="minesweeper-grid" class="minesweeper-grid"></div>
+                    </div>
+                </div>
+                <div class="status-bar">
+                    <span class="status-left">انقر بزر الماوس الأيمن لوضع العلم.</span>
+                    <span class="status-right">الألعاب</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Start Menu Component -->
+        <div id="start-menu" class="start-menu" style="display: none;">
+            <!-- Start Menu Header -->
+            <div class="start-header">
+                <div class="user-avatar">👤</div>
+                <span class="user-name">Amjad</span>
+            </div>
+            <!-- Start Menu Columns -->
+            <div class="start-columns">
+                <!-- Left column (most used programs) -->
+                <div class="start-left-col">
+                    <div class="start-menu-item" onclick="openWindow('win-ie')">
+                        <div class="start-item-icon ie-s">🌐</div>
+                        <div class="start-item-text">
+                            <strong>متصفح الويب</strong>
+                            <span>Internet Explorer</span>
+                        </div>
+                    </div>
+                    <div class="start-menu-item" onclick="openDefaultNotepad()">
+                        <div class="start-item-icon notepad-s">📝</div>
+                        <div class="start-item-text">
+                            <strong>مفكرة النصوص</strong>
+                            <span>Notepad</span>
+                        </div>
+                    </div>
+                    <div class="start-menu-item" onclick="openWindow('win-minesweeper')">
+                        <div class="start-item-icon mine-s">💣</div>
+                        <div class="start-item-text">
+                            <strong>لعبة الألغام</strong>
+                            <span>Minesweeper</span>
+                        </div>
+                    </div>
+                    <hr class="start-divider">
+                    <div class="start-menu-item" onclick="openWindow('win-computer')">
+                        <div class="start-item-icon">💻</div>
+                        <div class="start-item-text">
+                            <strong>جهازي الشخصي</strong>
+                            <span>معلومات النظام والمواصفات</span>
+                        </div>
+                    </div>
+                    <div class="start-menu-item" onclick="openWindow('win-documents')">
+                        <div class="start-item-icon">📁</div>
+                        <div class="start-item-text">
+                            <strong>المستندات والمشاريع</strong>
+                            <span>الملفات المنجزة</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Right column (system locations) -->
+                <div class="start-right-col">
+                    <div class="start-sys-item" onclick="openWindow('win-documents')">📂 مستنداتي</div>
+                    <div class="start-sys-item" onclick="openWindow('win-computer')">🖥️ جهازي</div>
+                    <div class="start-sys-item" style="opacity: 0.6; cursor: not-allowed;">🎮 الألعاب</div>
+                    <hr class="start-divider">
+                    <div class="start-sys-item" style="opacity: 0.6; cursor: not-allowed;">🛠️ لوحة التحكم</div>
+                    <div class="start-sys-item" style="opacity: 0.6; cursor: not-allowed;">🔍 بحث</div>
+                    <div class="start-sys-item" style="opacity: 0.6; cursor: not-allowed;">🏃 تشغيل (Run)...</div>
+                </div>
+            </div>
+            <!-- Start Menu Footer -->
+            <div class="start-footer">
+                <button class="footer-btn" onclick="alert('شكرًا لزيارتك موقعي الشخصي!')">
+                    <span class="btn-icon logoff">🔑</span>
+                    تسجيل الخروج
+                </button>
+                <button class="footer-btn" onclick="shutdownSite()">
+                    <span class="btn-icon turnoff">🔴</span>
+                    إيقاف التشغيل
+                </button>
+            </div>
+        </div>
+
+        <!-- Taskbar -->
+        <div class="taskbar">
+            <!-- Start button -->
+            <button id="start-btn" class="start-button">
+                <span class="start-icon">❖</span>
+                ابدأ
+            </button>
+            <!-- Active tasks area -->
+            <div id="taskbar-tasks" class="taskbar-tasks">
+                <!-- Task buttons injected dynamically by JS -->
+            </div>
+            <!-- System Tray -->
+            <div class="system-tray">
+                <span class="tray-icon" title="صوت">🔊</span>
+                <span class="tray-icon" title="شبكة">🌐</span>
+                <span id="tray-clock" class="tray-clock">12:00 م</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- BSOD Screen (for Shutdown animation easter egg) -->
+    <div id="bsod-screen" class="bsod" style="display: none;">
+        <div class="bsod-text">
+            <p>*** STOP: 0x000000D1 (0x0000000C, 0x00000002, 0x00000000, 0xF86B5A89)</p>
+            <p>PORTCLS.SYS - Address F86B5A89 base at F86B0000, DateStamp 36b0724f</p>
+            <br>
+            <p>لقد قمت بإيقاف تشغيل موقع المطور الشخصي. للعودة للتشغيل، قم بإعادة تحميل الصفحة (F5).</p>
+            <br>
+            <p>إذا كانت هذه هي المرة الأولى التي ترى فيها شاشة الخطأ هذه، أعد تشغيل المتصفح. إذا استمرت هذه الشاشة، فتأكد من تواصلك مع المطور لتأمين العقد وبناء تطبيقات ويب رائعة.</p>
+            <br>
+            <p>اضغط على أي مفتاح لإعادة تشغيل النظام _</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,809 @@
+// Windows XP JavaScript Logic
+
+// Global State
+let activeWindow = null;
+let zIndexCounter = 100;
+let windowStates = {}; // Stores position and sizes of windows for restoring
+let currentFolderId = null; // null means root of My Documents
+let defaultCVText = "";
+let PROJECTS_DATA = [];
+
+function openDefaultNotepad() {
+    const notepadText = document.getElementById('notepad-text');
+    const notepadWin = document.getElementById('win-notepad');
+    if (!notepadText || !notepadWin) return;
+    
+    const titleEl = notepadWin.querySelector('.title-bar-text');
+    titleEl.innerHTML = `<img class="window-mini-icon" src="data:image/svg+xml;utf8,<svg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'><rect x='8' y='4' width='32' height='40' rx='3' fill='%23ECEFF1' stroke='%2337474F' stroke-width='2'/></svg>" alt=""> السيرة_الذاتية.txt - مفكرة`;
+    notepadText.value = defaultCVText;
+    
+    openWindow('win-notepad');
+}
+
+function openNotepadWithFile(name, content) {
+    const notepadText = document.getElementById('notepad-text');
+    const notepadWin = document.getElementById('win-notepad');
+    if (!notepadText || !notepadWin) return;
+    
+    const titleEl = notepadWin.querySelector('.title-bar-text');
+    titleEl.innerHTML = `<img class="window-mini-icon" src="data:image/svg+xml;utf8,<svg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'><rect x='8' y='4' width='32' height='40' rx='3' fill='%23ECEFF1' stroke='%2337474F' stroke-width='2'/></svg>" alt=""> ${name} - مفكرة`;
+    notepadText.value = content;
+    
+    openWindow('win-notepad');
+}
+
+// DOM Elements
+const desktop = document.getElementById('desktop');
+const startBtn = document.getElementById('start-btn');
+const startMenu = document.getElementById('start-menu');
+const trayClock = document.getElementById('tray-clock');
+const taskbarTasks = document.getElementById('taskbar-tasks');
+
+// 1. Z-Index and Focus Management
+function focusWindow(windowEl) {
+    if (!windowEl) return;
+    
+    // Deactivate current active window styling
+    const currentActive = document.querySelector('.window.active-window');
+    if (currentActive) {
+        currentActive.classList.remove('active-window');
+    }
+    
+    // Bring to front
+    zIndexCounter += 1;
+    windowEl.style.zIndex = zIndexCounter;
+    windowEl.classList.add('active-window');
+    activeWindow = windowEl;
+    
+    // Update taskbar button active class
+    updateTaskbarActiveTab(windowEl.id);
+}
+
+// 2. Open / Close / Minimize / Maximize Window Controls
+function openWindow(id) {
+    const win = document.getElementById(id);
+    if (!win) return;
+    
+    // Show window if hidden
+    win.style.display = 'flex';
+    
+    // Focus window
+    focusWindow(win);
+    
+    // Ensure taskbar tab is present
+    createTaskbarTab(id, getWindowTitle(win));
+    
+    // Close start menu
+    startMenu.style.display = 'none';
+}
+
+function getWindowTitle(win) {
+    const titleTextEl = win.querySelector('.title-bar-text');
+    // Get text content excluding child elements (like mini-icon image/svg)
+    let title = '';
+    titleTextEl.childNodes.forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) {
+            title += node.textContent;
+        }
+    });
+    return title.trim() || 'نافذة';
+}
+
+function closeWindow(win) {
+    win.style.display = 'none';
+    removeTaskbarTab(win.id);
+}
+
+function minimizeWindow(win) {
+    win.style.display = 'none';
+    const tab = document.querySelector(`.task-button[data-window-id="${win.id}"]`);
+    if (tab) {
+        tab.classList.remove('active');
+    }
+}
+
+function toggleMaximizeWindow(win) {
+    const isMaximized = win.classList.contains('maximized');
+    
+    if (!isMaximized) {
+        // Save restore dimensions
+        windowStates[win.id] = {
+            top: win.style.top,
+            left: win.style.left,
+            width: win.style.width,
+            height: win.style.height
+        };
+        
+        // Maximize
+        win.classList.add('maximized');
+        win.style.top = '0';
+        win.style.left = '0';
+        win.style.width = '100%';
+        win.style.height = 'calc(100% - 30px)';
+    } else {
+        // Restore
+        win.classList.remove('maximized');
+        const state = windowStates[win.id];
+        if (state) {
+            win.style.top = state.top;
+            win.style.left = state.left;
+            win.style.width = state.width;
+            win.style.height = state.height;
+        }
+    }
+}
+
+// 3. Taskbar Management
+function createTaskbarTab(winId, title) {
+    // Check if tab already exists
+    let tab = document.querySelector(`.task-button[data-window-id="${winId}"]`);
+    if (tab) return;
+    
+    tab = document.createElement('button');
+    tab.className = 'task-button';
+    tab.setAttribute('data-window-id', winId);
+    
+    // Get icon representation
+    let icon = '📂';
+    if (winId === 'win-computer') icon = '💻';
+    if (winId === 'win-notepad') icon = '📝';
+    if (winId === 'win-ie') icon = '🌐';
+    if (winId === 'win-minesweeper') icon = '💣';
+    
+    tab.innerHTML = `<span class="task-icon">${icon}</span> ${title}`;
+    
+    // Clicking task button toggles minimize / restore / focus
+    tab.addEventListener('click', () => {
+        const win = document.getElementById(winId);
+        if (!win) return;
+        
+        if (win.style.display === 'none') {
+            win.style.display = 'flex';
+            focusWindow(win);
+        } else if (win.classList.contains('active-window')) {
+            minimizeWindow(win);
+        } else {
+            focusWindow(win);
+        }
+    });
+    
+    taskbarTasks.appendChild(tab);
+    updateTaskbarActiveTab(winId);
+}
+
+function removeTaskbarTab(winId) {
+    const tab = document.querySelector(`.task-button[data-window-id="${winId}"]`);
+    if (tab) {
+        tab.remove();
+    }
+}
+
+function updateTaskbarActiveTab(activeWinId) {
+    document.querySelectorAll('.task-button').forEach(tab => {
+        if (tab.getAttribute('data-window-id') === activeWinId) {
+            tab.classList.add('active');
+        } else {
+            tab.classList.remove('active');
+        }
+    });
+}
+
+// 4. Draggable Windows Logic (Mouse & Touch)
+function makeWindowDraggable(win) {
+    const titleBar = win.querySelector('.title-bar');
+    let posX = 0, posY = 0, mouseX = 0, mouseY = 0;
+    
+    titleBar.addEventListener('mousedown', dragMouseDown);
+    titleBar.addEventListener('touchstart', dragTouchStart, { passive: false });
+    
+    function dragMouseDown(e) {
+        if (win.classList.contains('maximized')) return;
+        e.preventDefault();
+        focusWindow(win);
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        document.addEventListener('mouseup', closeDragElement);
+        document.addEventListener('mousemove', elementDrag);
+    }
+    
+    function dragTouchStart(e) {
+        if (win.classList.contains('maximized')) return;
+        focusWindow(win);
+        const touch = e.touches[0];
+        mouseX = touch.clientX;
+        mouseY = touch.clientY;
+        document.addEventListener('touchend', closeDragElement);
+        document.addEventListener('touchmove', elementTouchDrag, { passive: false });
+    }
+    
+    function elementDrag(e) {
+        e.preventDefault();
+        posX = mouseX - e.clientX;
+        posY = mouseY - e.clientY;
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        
+        const top = win.offsetTop - posY;
+        const left = win.offsetLeft - posX;
+        
+        // Prevent window from going offscreen completely
+        win.style.top = `${Math.max(0, top)}px`;
+        win.style.left = `${left}px`;
+    }
+    
+    function elementTouchDrag(e) {
+        // Prevent scroll
+        e.preventDefault();
+        const touch = e.touches[0];
+        posX = mouseX - touch.clientX;
+        posY = mouseY - touch.clientY;
+        mouseX = touch.clientX;
+        mouseY = touch.clientY;
+        
+        const top = win.offsetTop - posY;
+        const left = win.offsetLeft - posX;
+        
+        win.style.top = `${Math.max(0, top)}px`;
+        win.style.left = `${left}px`;
+    }
+    
+    function closeDragElement() {
+        document.removeEventListener('mouseup', closeDragElement);
+        document.removeEventListener('mousemove', elementDrag);
+        document.removeEventListener('touchend', closeDragElement);
+        document.removeEventListener('touchmove', elementTouchDrag);
+    }
+}
+
+// 5. Clock Tick in System Tray
+function updateClock() {
+    const now = new Date();
+    let hours = now.getHours();
+    const minutes = now.getMinutes();
+    const ampm = hours >= 12 ? 'م' : 'ص';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // 0 should be 12
+    const strMinutes = minutes < 10 ? '0' + minutes : minutes;
+    trayClock.textContent = `${hours}:${strMinutes} ${ampm}`;
+}
+
+// 6. Project Viewer (My Documents)
+function openProject(id) {
+    if (typeof PROJECTS_DATA === 'undefined') return;
+    const project = PROJECTS_DATA.find(p => p.id === id);
+    if (!project) return;
+    
+    const panel = document.getElementById('project-detail-panel');
+    const title = document.getElementById('proj-title');
+    const desc = document.getElementById('proj-desc');
+    const badge = document.getElementById('proj-badge');
+    
+    title.textContent = project.title;
+    desc.textContent = project.description;
+    badge.textContent = `التقنيات: ${project.technologies}`;
+    
+    panel.style.display = 'block';
+}
+
+function renderProjects() {
+    const grid = document.getElementById('projects-grid');
+    const statusLeft = document.getElementById('documents-status-left');
+    const btnDocUp = document.getElementById('btn-doc-up');
+    const docCurrentPath = document.getElementById('doc-current-path');
+    
+    if (!grid) return;
+    
+    grid.innerHTML = '';
+    
+    if (typeof PROJECTS_DATA === 'undefined' || !Array.isArray(PROJECTS_DATA)) return;
+    
+    if (currentFolderId === null) {
+        // We are at root level (display project folders)
+        if (btnDocUp) btnDocUp.disabled = true;
+        if (docCurrentPath) docCurrentPath.textContent = 'مستنداتي';
+        
+        PROJECTS_DATA.forEach(proj => {
+            const item = document.createElement('div');
+            item.className = 'file-item';
+            item.tabIndex = 0;
+            
+            // Double click to enter project folder
+            item.addEventListener('dblclick', () => {
+                currentFolderId = proj.id;
+                renderProjects();
+            });
+            
+            // Touch support (double tap) to enter folder
+            let lastTap = 0;
+            item.addEventListener('touchend', (e) => {
+                const currentTime = new Date().getTime();
+                const tapLength = currentTime - lastTap;
+                if (tapLength < 300 && tapLength > 0) {
+                    currentFolderId = proj.id;
+                    renderProjects();
+                    e.preventDefault();
+                } else {
+                    // Single tap - show details
+                    openProject(proj.id);
+                }
+                lastTap = currentTime;
+            });
+            
+            // Single click to show details
+            item.addEventListener('click', () => {
+                item.focus();
+                openProject(proj.id);
+            });
+            
+            item.innerHTML = `
+                <div class="file-icon">${proj.icon || '📁'}</div>
+                <span class="file-label">${proj.title}</span>
+            `;
+            
+            grid.appendChild(item);
+        });
+        
+        if (statusLeft) {
+            statusLeft.textContent = `عدد العناصر: ${PROJECTS_DATA.length} مجلدات`;
+        }
+    } else {
+        // We are inside a project folder (display sub-files)
+        const project = PROJECTS_DATA.find(p => p.id === currentFolderId);
+        if (!project) return;
+        
+        if (btnDocUp) btnDocUp.disabled = false;
+        if (docCurrentPath) docCurrentPath.textContent = `مستنداتي \\ ${project.title}`;
+        
+        // Hide details panel to keep clean layout
+        const panel = document.getElementById('project-detail-panel');
+        if (panel) panel.style.display = 'none';
+        
+        if (project.files && project.files.length > 0) {
+            project.files.forEach(file => {
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                item.tabIndex = 0;
+                
+                // Double click to open text file in Notepad
+                item.addEventListener('dblclick', () => {
+                    openNotepadWithFile(file.name, file.content);
+                });
+                
+                // Touch support (double tap) to open file
+                let lastTap = 0;
+                item.addEventListener('touchend', (e) => {
+                    const currentTime = new Date().getTime();
+                    const tapLength = currentTime - lastTap;
+                    if (tapLength < 300 && tapLength > 0) {
+                        openNotepadWithFile(file.name, file.content);
+                        e.preventDefault();
+                    }
+                    lastTap = currentTime;
+                });
+                
+                item.addEventListener('click', () => {
+                    item.focus();
+                });
+                
+                item.innerHTML = `
+                    <div class="file-icon">📄</div>
+                    <span class="file-label">${file.name}</span>
+                `;
+                
+                grid.appendChild(item);
+            });
+            
+            if (statusLeft) {
+                statusLeft.textContent = `عدد العناصر: ${project.files.length} ملفات`;
+            }
+        } else {
+            // Folder is empty
+            const emptyMsg = document.createElement('div');
+            emptyMsg.style.gridColumn = '1 / -1';
+            emptyMsg.style.padding = '20px';
+            emptyMsg.style.color = '#777';
+            emptyMsg.style.fontStyle = 'italic';
+            emptyMsg.style.textAlign = 'center';
+            emptyMsg.textContent = 'هذا المجلد فارغ.';
+            grid.appendChild(emptyMsg);
+            
+            if (statusLeft) {
+                statusLeft.textContent = 'عدد العناصر: 0 ملفات';
+            }
+        }
+    }
+}
+
+// 7. Notepad File Handling
+function saveNotepadText() {
+    const text = document.getElementById('notepad-text').value;
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    
+    // Dynamically retrieve loaded file name from title bar
+    const titleEl = document.getElementById('win-notepad').querySelector('.title-bar-text');
+    let titleText = titleEl ? titleEl.textContent.trim() : "السيرة_الذاتية.txt";
+    titleText = titleText.replace(" - مفكرة", "");
+    
+    link.download = titleText || "السيرة_الذاتية.txt";
+    link.click();
+}
+
+function clearNotepad() {
+    document.getElementById('notepad-text').value = '';
+}
+
+// 8. Minesweeper Game Engine
+let msGrid = [];
+let msRows = 9;
+let msCols = 9;
+let msMines = 10;
+let msTimerId = null;
+let msTime = 0;
+let msMinesLeft = 10;
+let msGameOver = false;
+let msFirstClick = true;
+
+const msGridEl = document.getElementById('minesweeper-grid');
+const msMineCountEl = document.getElementById('ms-mine-count');
+const msTimerEl = document.getElementById('ms-timer');
+const msSmileyBtn = document.getElementById('ms-smiley-btn');
+
+function initMinesweeper(rows = 9, cols = 9, mines = 10) {
+    msRows = rows;
+    msCols = cols;
+    msMines = mines;
+    msMinesLeft = mines;
+    msTime = 0;
+    msGameOver = false;
+    msFirstClick = true;
+    
+    if (msTimerId) {
+        clearInterval(msTimerId);
+        msTimerId = null;
+    }
+    
+    msTimerEl.textContent = '000';
+    msMineCountEl.textContent = String(msMinesLeft).padStart(3, '0');
+    msSmileyBtn.textContent = '😀';
+    
+    // Set grid css
+    msGridEl.style.gridTemplateColumns = `repeat(${cols}, 20px)`;
+    msGridEl.style.gridTemplateRows = `repeat(${rows}, 20px)`;
+    
+    // Reset Grid Array
+    msGrid = Array(rows).fill(null).map(() => Array(cols).fill(null).map(() => ({
+        mine: false,
+        revealed: false,
+        flagged: false,
+        count: 0
+    })));
+    
+    renderMinesweeperBoard();
+}
+
+function renderMinesweeperBoard() {
+    msGridEl.innerHTML = '';
+    
+    for (let r = 0; r < msRows; r++) {
+        for (let c = 0; c < msCols; c++) {
+            const cellEl = document.createElement('div');
+            cellEl.className = 'minesweeper-cell';
+            cellEl.dataset.row = r;
+            cellEl.dataset.col = c;
+            
+            // Mouse event handlers
+            cellEl.addEventListener('click', () => handleCellClick(r, c));
+            cellEl.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                handleCellRightClick(r, c);
+            });
+            
+            // Visual feedback when holding click down (smiley changes face)
+            cellEl.addEventListener('mousedown', (e) => {
+                if (e.button === 0 && !msGameOver) {
+                    msSmileyBtn.textContent = '😮';
+                }
+            });
+            cellEl.addEventListener('mouseup', () => {
+                if (!msGameOver) {
+                    msSmileyBtn.textContent = '😀';
+                }
+            });
+            
+            msGridEl.appendChild(cellEl);
+        }
+    }
+}
+
+function placeMines(firstRow, firstCol) {
+    let minesPlaced = 0;
+    while (minesPlaced < msMines) {
+        const r = Math.floor(Math.random() * msRows);
+        const c = Math.floor(Math.random() * msCols);
+        
+        // Prevent mine placing on the first clicked cell or its immediate neighbors
+        const isSafeZone = Math.abs(r - firstRow) <= 1 && Math.abs(c - firstCol) <= 1;
+        
+        if (!msGrid[r][c].mine && !isSafeZone) {
+            msGrid[r][c].mine = true;
+            minesPlaced++;
+        }
+    }
+    
+    // Calculate counts
+    for (let r = 0; r < msRows; r++) {
+        for (let c = 0; c < msCols; c++) {
+            if (msGrid[r][c].mine) continue;
+            let count = 0;
+            for (let dr = -1; dr <= 1; dr++) {
+                for (let dc = -1; dc <= 1; dc++) {
+                    const nr = r + dr;
+                    const nc = c + dc;
+                    if (nr >= 0 && nr < msRows && nc >= 0 && nc < msCols) {
+                        if (msGrid[nr][nc].mine) count++;
+                    }
+                }
+            }
+            msGrid[r][c].count = count;
+        }
+    }
+}
+
+function startMinesweeperTimer() {
+    msTimerId = setInterval(() => {
+        msTime++;
+        if (msTime > 999) {
+            clearInterval(msTimerId);
+        } else {
+            msTimerEl.textContent = String(msTime).padStart(3, '0');
+        }
+    }, 1000);
+}
+
+function handleCellClick(r, c) {
+    if (msGameOver) return;
+    
+    const cell = msGrid[r][c];
+    if (cell.revealed || cell.flagged) return;
+    
+    if (msFirstClick) {
+        msFirstClick = false;
+        placeMines(r, c);
+        startMinesweeperTimer();
+    }
+    
+    if (cell.mine) {
+        triggerMinesweeperLoss();
+        return;
+    }
+    
+    revealCell(r, c);
+    checkMinesweeperWin();
+}
+
+function revealCell(r, c) {
+    const cell = msGrid[r][c];
+    if (cell.revealed) return;
+    
+    cell.revealed = true;
+    const cellEl = msGridEl.children[r * msCols + c];
+    cellEl.classList.add('revealed');
+    
+    if (cell.count > 0) {
+        cellEl.textContent = cell.count;
+        cellEl.dataset.num = cell.count;
+    } else {
+        // Flood fill reveal
+        for (let dr = -1; dr <= 1; dr++) {
+            for (let dc = -1; dc <= 1; dc++) {
+                const nr = r + dr;
+                const nc = c + dc;
+                if (nr >= 0 && nr < msRows && nc >= 0 && nc < msCols) {
+                    revealCell(nr, nc);
+                }
+            }
+        }
+    }
+}
+
+function handleCellRightClick(r, c) {
+    if (msGameOver) return;
+    const cell = msGrid[r][c];
+    if (cell.revealed) return;
+    
+    const cellEl = msGridEl.children[r * msCols + c];
+    
+    if (!cell.flagged) {
+        cell.flagged = true;
+        cellEl.classList.add('flagged');
+        cellEl.textContent = '🚩';
+        msMinesLeft--;
+    } else {
+        cell.flagged = false;
+        cellEl.classList.remove('flagged');
+        cellEl.textContent = '';
+        msMinesLeft++;
+    }
+    
+    msMineCountEl.textContent = String(Math.max(0, msMinesLeft)).padStart(3, '0');
+}
+
+function triggerMinesweeperLoss() {
+    msGameOver = true;
+    clearInterval(msTimerId);
+    msSmileyBtn.textContent = '😵';
+    
+    // Reveal all mines
+    for (let r = 0; r < msRows; r++) {
+        for (let c = 0; c < msCols; c++) {
+            const cell = msGrid[r][c];
+            const cellEl = msGridEl.children[r * msCols + c];
+            if (cell.mine) {
+                cellEl.classList.add('revealed');
+                cellEl.textContent = '💣';
+                cellEl.style.backgroundColor = '#f44336';
+            }
+        }
+    }
+}
+
+function checkMinesweeperWin() {
+    let unrevealedSafeCells = 0;
+    for (let r = 0; r < msRows; r++) {
+        for (let c = 0; c < msCols; c++) {
+            const cell = msGrid[r][c];
+            if (!cell.mine && !cell.revealed) {
+                unrevealedSafeCells++;
+            }
+        }
+    }
+    
+    if (unrevealedSafeCells === 0) {
+        msGameOver = true;
+        clearInterval(msTimerId);
+        msSmileyBtn.textContent = '😎';
+        msMineCountEl.textContent = '000';
+        alert('تهانينا! لقد تغلبت على الألغام بنجاح! 🏆');
+    }
+}
+
+// 9. Shutdown Easter Egg (BSOD)
+function shutdownSite() {
+    const bsod = document.getElementById('bsod-screen');
+    bsod.style.display = 'block';
+    
+    // Add Event listener to reset site on keypress
+    document.addEventListener('keydown', rebootSite);
+    document.addEventListener('click', rebootSite);
+}
+
+function rebootSite() {
+    document.removeEventListener('keydown', rebootSite);
+    document.removeEventListener('click', rebootSite);
+    location.reload();
+}
+
+// Initialization and Event Listeners Setup
+document.addEventListener('DOMContentLoaded', () => {
+    // 0. Fetch projects database and render
+    fetch('projects.json')
+        .then(response => response.json())
+        .then(data => {
+            PROJECTS_DATA = data;
+            renderProjects();
+        })
+        .catch(err => {
+            console.error("Error loading projects database:", err);
+        });
+
+    // 1. Setup clock
+    updateClock();
+    setInterval(updateClock, 1000);
+    
+    // 2. Setup Windows Interactions
+    const windows = document.querySelectorAll('.window');
+    windows.forEach(win => {
+        // Drag Setup
+        makeWindowDraggable(win);
+        
+        // Focus Setup
+        win.addEventListener('mousedown', () => focusWindow(win));
+        win.addEventListener('touchstart', () => focusWindow(win), { passive: true });
+        
+        // Window Control Buttons Setup
+        const btnMin = win.querySelector('.btn-min');
+        const btnMax = win.querySelector('.btn-max');
+        const btnClose = win.querySelector('.btn-close');
+        
+        if (btnMin) btnMin.addEventListener('click', (e) => { e.stopPropagation(); minimizeWindow(win); });
+        if (btnMax) btnMax.addEventListener('click', (e) => { e.stopPropagation(); toggleMaximizeWindow(win); });
+        if (btnClose) btnClose.addEventListener('click', (e) => { e.stopPropagation(); closeWindow(win); });
+        
+        // Register default open window in taskbar
+        if (win.style.display !== 'none') {
+            createTaskbarTab(win.id, getWindowTitle(win));
+            focusWindow(win);
+        }
+    });
+    
+    // Save default CV text
+    const notepadText = document.getElementById('notepad-text');
+    if (notepadText) {
+        defaultCVText = notepadText.value;
+    }
+    
+    // Setup Up button for My Documents explorer navigation
+    const btnDocUp = document.getElementById('btn-doc-up');
+    if (btnDocUp) {
+        btnDocUp.addEventListener('click', () => {
+            currentFolderId = null;
+            renderProjects();
+        });
+    }
+
+    // 3. Desktop Icon Double Click / Click launch
+    const icons = document.querySelectorAll('.desktop-icon');
+    icons.forEach(icon => {
+        const idMap = {
+            'icon-computer': 'win-computer',
+            'icon-documents': 'win-documents',
+            'icon-notepad': 'win-notepad',
+            'icon-ie': 'win-ie',
+            'icon-minesweeper': 'win-minesweeper'
+        };
+        
+        const targetId = idMap[icon.id];
+        
+        // Click focuses/opens
+        icon.addEventListener('dblclick', () => {
+            if (icon.id === 'icon-notepad') {
+                openDefaultNotepad();
+            } else {
+                openWindow(targetId);
+            }
+        });
+        
+        // Touch support (double tap)
+        let lastTap = 0;
+        icon.addEventListener('touchend', (e) => {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTap;
+            if (tapLength < 300 && tapLength > 0) {
+                if (icon.id === 'icon-notepad') {
+                    openDefaultNotepad();
+                } else {
+                    openWindow(targetId);
+                }
+                e.preventDefault();
+            }
+            lastTap = currentTime;
+        });
+    });
+    
+    // 4. Start Button & Start Menu
+    startBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (startMenu.style.display === 'none') {
+            startMenu.style.display = 'flex';
+        } else {
+            startMenu.style.display = 'none';
+        }
+    });
+    
+    // Close start menu when clicking outside
+    document.addEventListener('click', () => {
+        startMenu.style.display = 'none';
+    });
+    
+    startMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+    
+    // 5. Minesweeper Reset Setup
+    msSmileyBtn.addEventListener('click', () => initMinesweeper(msRows, msCols, msMines));
+    
+    // Initialize Minesweeper beginner version
+    initMinesweeper(9, 9, 10);
+});
