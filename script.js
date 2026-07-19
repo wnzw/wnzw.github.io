@@ -111,7 +111,60 @@ function loadSiteSettings() {
             `;
             ieLinksContainer.appendChild(a);
         });
-    }
+    
+    // Apply Desktop apps configuration (Labels, Window titles, Page headers)
+    let defaultApps = {
+        computer: { label: "جهازي (My Computer)", title: "جهازي (My Computer)" },
+        documents: { label: "مستنداتي (My Documents)", title: "مستنداتي (My Documents)" },
+        ie: { label: "المتصفح (Internet Explorer)", title: "عن المطور - Internet Explorer", header: "بوابة التواصل والشبكات الاجتماعية", subheader: "أهلاً بك في صفحتي الشخصية عبر متصفح Internet Explorer الكلاسيكي!" },
+        notepad: { label: "السيرة الذاتية (Notepad)", title: "السيرة_الذاتية.txt - مفكرة" },
+        mediaplayer: { label: "Windows Media Player", title: "Windows Media Player" },
+        minesweeper: { label: "كنس الألغام (Minesweeper)", title: "كنس الألغام (Minesweeper)" }
+    };
+    
+    const apps = { ...defaultApps, ...(settings.desktop_apps || {}) };
+    
+    // Apply Desktop labels
+    const lblComputer = document.getElementById('label-icon-computer');
+    if (lblComputer) lblComputer.textContent = apps.computer.label;
+    
+    const lblDocuments = document.getElementById('label-icon-documents');
+    if (lblDocuments) lblDocuments.textContent = apps.documents.label;
+    
+    const lblNotepad = document.getElementById('label-icon-notepad');
+    if (lblNotepad) lblNotepad.textContent = apps.notepad.label;
+    
+    const lblIe = document.getElementById('label-icon-ie');
+    if (lblIe) lblIe.textContent = apps.ie.label;
+    
+    const lblMinesweeper = document.getElementById('label-icon-minesweeper');
+    if (lblMinesweeper) lblMinesweeper.textContent = apps.minesweeper.label;
+    
+    // Apply Window titles
+    const winComputer = document.getElementById('title-text-computer');
+    if (winComputer) winComputer.textContent = apps.computer.title;
+    
+    const winDocuments = document.getElementById('title-text-documents');
+    if (winDocuments) winDocuments.textContent = apps.documents.title;
+    
+    const winNotepad = document.getElementById('title-text-notepad');
+    if (winNotepad) winNotepad.textContent = apps.notepad.title;
+    
+    const winIe = document.getElementById('title-text-ie');
+    if (winIe) winIe.textContent = apps.ie.title;
+    
+    const winMinesweeper = document.getElementById('title-text-minesweeper');
+    if (winMinesweeper) winMinesweeper.textContent = apps.minesweeper.title;
+    
+    const winMediaPlayer = document.getElementById('title-text-mediaplayer');
+    if (winMediaPlayer) winMediaPlayer.textContent = apps.mediaplayer.title;
+    
+    // Apply IE Page headers
+    const ieHeader = document.getElementById('ie-page-header');
+    if (ieHeader) ieHeader.textContent = apps.ie.header;
+    
+    const ieSubheader = document.getElementById('ie-page-subheader');
+    if (ieSubheader) ieSubheader.textContent = apps.ie.subheader;
 }
 
 function openDefaultNotepad() {
