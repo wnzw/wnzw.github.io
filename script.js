@@ -8,20 +8,78 @@ let currentFolderId = null; // null means root of My Documents
 let defaultCVText = "";
 
 function getProjects() {
+    let stored = localStorage.getItem('projects_data');
+    if (stored) {
+        try {
+            return JSON.parse(stored);
+        } catch(e) {
+            console.error("Error parsing projects_data from localStorage", e);
+        }
+    }
+    // Fallback to PROJECTS_DATA in projects-data.js (or custom_projects if legacy)
     const baseProjects = (typeof PROJECTS_DATA !== 'undefined' && Array.isArray(PROJECTS_DATA)) ? PROJECTS_DATA : [];
     let customProjects = [];
     try {
         customProjects = JSON.parse(localStorage.getItem('custom_projects')) || [];
-    } catch (e) {
-        console.error("Error reading custom projects from localStorage", e);
+    } catch (e) {}
+    if (customProjects.length > 0) {
+        const merged = [...baseProjects, ...customProjects];
+        localStorage.setItem('projects_data', JSON.stringify(merged));
+        localStorage.removeItem('custom_projects');
+        return merged;
     }
-    return [...baseProjects, ...customProjects];
+    return baseProjects;
 }
 
 function resetLocalProjects() {
-    if (confirm("هل أنت متأكد من رغبتك في حذف جميع المجلدات المضافة محلياً؟")) {
+    if (confirm("هل أنت متأكد من رغبتك في حذف جميع التغييرات وإعادة المجلدات الافتراضية للموقع؟")) {
+        localStorage.removeItem('projects_data');
         localStorage.removeItem('custom_projects');
         renderProjects();
+    }
+}
+
+function loadSiteSettings() {
+    let settings = {
+        username: "Amjad",
+        avatar: "👤",
+        os_name: "Passion OS v2026",
+        cpu: "ذهن بشري متكامل (Human Brain) @ 3.80GHz",
+        ram: "16.0 جيجابايت من العزيمة والإصرار",
+        wallpaper: "bliss_wallpaper.jpg"
+    };
+    try {
+        const stored = localStorage.getItem('site_settings');
+        if (stored) {
+            settings = { ...settings, ...JSON.parse(stored) };
+        }
+    } catch (e) {
+        console.error("Error reading site settings from localStorage", e);
+    }
+    
+    // Apply username and avatar
+    const nameEl = document.getElementById('start-user-name');
+    if (nameEl) nameEl.textContent = settings.username;
+    const avatarEl = document.getElementById('start-user-avatar');
+    if (avatarEl) avatarEl.textContent = settings.avatar;
+    
+    // Apply system info
+    const osEl = document.getElementById('info-os-name');
+    if (osEl) osEl.textContent = settings.os_name;
+    const cpuEl = document.getElementById('info-cpu');
+    if (cpuEl) cpuEl.textContent = settings.cpu;
+    const ramEl = document.getElementById('info-ram');
+    if (ramEl) ramEl.textContent = settings.ram;
+    
+    // Apply wallpaper
+    const desktopEl = document.getElementById('desktop');
+    if (desktopEl && settings.wallpaper) {
+        if (settings.wallpaper.startsWith('http') || settings.wallpaper.includes('/') || settings.wallpaper.includes('.')) {
+            desktopEl.style.backgroundImage = `url('${settings.wallpaper}')`;
+        } else {
+            desktopEl.style.backgroundImage = 'none';
+            desktopEl.style.backgroundColor = settings.wallpaper;
+        }
     }
 }
 
@@ -782,6 +840,9 @@ function rebootSite() {
 
 // Initialization and Event Listeners Setup
 document.addEventListener('DOMContentLoaded', () => {
+    // Load custom site settings
+    loadSiteSettings();
+
     // 0. Render projects (loaded from projects-data.js)
     renderProjects();
 
