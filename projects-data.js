@@ -14,11 +14,31 @@ const SITE_SETTINGS = {
     "cv_text": "==================================================\nالاسم: مبرمج ومطور مواقع محترف\nالتخصص: مطور واجهات أمامية وخلفية (Full-Stack Developer)\nالعنوان: الرياض، المملكة العربية السعودية\n==================================================\n\n[الخبرات المهنية]\n• مطور ويب أول - شركة الحلول التقنية (2024 - الآن)\n  - تطوير وتحسين أداء التطبيقات بنسبة 40%.\n  - قيادة فريق التطوير لبناء لوحة تحكم ذكية متكاملة.\n\n• مطور واجهات أمامية - ويب تيك (2022 - 2024)\n  - بناء مواقع متجاوبة وسريعة تلبي تجربة المستخدم المثالية.\n\n[المهارات الفنية]\n- اللغات الأساسية: HTML5, CSS3, JavaScript (ES6+), SQL\n- أطر العمل: React, Next.js, Node.js, Express\n- قواعد البيانات: MongoDB, PostgreSQL, MySQL\n- أدوات التطوير: Git, Docker, Webpack\n\n[الشهادات الأكاديمية]\n- بكالوريوس في علوم الحاسب والمعلومات\n- شهادة مطور ويب معتمد من Udacity\n\n[أهداف مهنية]\nأسعى لبناء تطبيقات ويب مبتكرة وعالية الأداء تعزز من تجارب المستخدمين وتدعم التحول الرقمي.\n\nملاحظة: يمكنك الضغط على \"حفظ\" لتحميل نسخة من السيرة الذاتية لجهازك!",
     "ie_links": [],
     "desktop_apps": {
-        "computer": { "label": "جهازي (My Computer)", "title": "جهازي (My Computer)" },
-        "documents": { "label": "مستنداتي (My Documents)", "title": "مستنداتي (My Documents)" },
-        "ie": { "label": "المتصفح (Internet Explorer)", "title": "عن المطور - Internet Explorer", "header": "بوابة التواصل والشبكات الاجتماعية", "subheader": "أهلاً بك في صفحتي الشخصية عبر متصفح Internet Explorer الكلاسيكي!" },
-        "notepad": { "label": "السيرة الذاتية (Notepad)", "title": "السيرة_الذاتية.txt - مفكرة" },
-        "mediaplayer": { "label": "Windows Media Player", "title": "Windows Media Player" },
-        "minesweeper": { "label": "كنس الألغام (Minesweeper)", "title": "كنس الألغام (Minesweeper)" }
+        "computer": {
+            "label": "جهازي (My Computer)",
+            "title": "جهازي (My Computer)"
+        },
+        "documents": {
+            "label": "مستنداتي (My Documents)",
+            "title": "مستنداتي (My Documents)"
+        },
+        "ie": {
+            "label": "المتصفح (Internet Explorer)",
+            "title": "عن المطور - Internet Explorer",
+            "header": "التواصل الاجتماعي",
+            "subheader": "نورنا باحد شبكات التواصل الاجتماعي"
+        },
+        "notepad": {
+            "label": "السيرة الذاتية (Notepad)",
+            "title": "السيرة_الذاتية.txt - مفكرة"
+        },
+        "mediaplayer": {
+            "label": "Windows Media Player",
+            "title": "Windows Media Player"
+        },
+        "minesweeper": {
+            "label": "كنس الألغام (Minesweeper)",
+            "title": "كنس الألغام (Minesweeper)"
+        }
     }
 };
