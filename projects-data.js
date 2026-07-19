@@ -61,5 +61,13 @@ const PROJECTS_DATA = [
         "description": "eggesdgewge",
         "technologies": "ge",
         "files": []
+    },
+    {
+        "id": "ngfhrgherggew",
+        "title": "اقاصقابا",
+        "icon": "📁",
+        "description": "قثاقصاقا",
+        "technologies": "اقثقث",
+        "files": []
     }
 ];
