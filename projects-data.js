@@ -7,8 +7,8 @@ const PROJECTS_DATA = [
         "id": "ngfhrgherg",
         "title": "gegege",
         "icon": "📁",
-        "description": "eegeg",
-        "technologies": "egeg",
+        "description": "ثلثثل",
+        "technologies": "للثل",
         "files": []
     }
 ];
