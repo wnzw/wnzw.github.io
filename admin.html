@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم وإدارة الموقع - Windows XP</title>
+    <style>
+        :root {
+            --win-bg: #ece9d8;
+            --win-blue-dark: #0054e3;
+            --win-blue-light: #2788f5;
+            --win-btn-green: linear-gradient(to bottom, #3c933c 0%, #2f7e2f 100%);
+            --win-btn-green-hover: linear-gradient(to bottom, #4caf50 0%, #388e3c 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Tahoma", "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #5a7edc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Classic XP Window styling */
+        .window {
+            background-color: var(--win-bg);
+            border: 3px solid var(--win-blue-dark);
+            border-radius: 7px 7px 0 0;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Title Bar */
+        .title-bar {
+            background: linear-gradient(to right, #0058e6 0%, #3a93ff 100%);
+            height: 30px;
+            padding: 4px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 13px;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+            border-radius: 4px 4px 0 0;
+        }
+
+        .title-bar-text {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Main Form Area */
+        .window-body {
+            background-color: #ffffff;
+            border: 2px inset #ffffff;
+            margin: 4px;
+            flex-grow: 1;
+        }
+
+        /* XP Sidebar & Content Layout */
+        .info-layout {
+            display: flex;
+            min-height: 480px;
+        }
+
+        .sidebar-xp {
+            width: 200px;
+            background: linear-gradient(to bottom, #7496e6 0%, #a4bfe9 100%);
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-shrink: 0;
+            border-left: 1px solid #7496e6;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(to left, #235bd4 0%, #769ff3 100%);
+            color: #ffffff;
+            font-weight: bold;
+            padding: 4px 8px;
+            font-size: 11px;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .sidebar-links {
+            background-color: #d6e4f6;
+            border: 1px solid #769ff3;
+            border-top: none;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            border-radius: 0 0 4px 4px;
+        }
+
+        .sidebar-link {
+            color: #215dc6;
+            text-decoration: none;
+            font-size: 11px;
+            padding: 4px;
+            display: block;
+        }
+
+        .sidebar-link:hover {
+            text-decoration: underline;
+        }
+
+        .sidebar-link.active-link {
+            background-color: #316ac5;
+            color: #ffffff;
+            font-weight: bold;
+            border-radius: 2px;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 550px;
+        }
+
+        /* Form styling */
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"], input[type="password"], textarea, select {
+            width: 100%;
+            padding: 6px;
+            font-size: 12px;
+            border: 1px solid #7f9db9;
+            border-radius: 2px;
+            outline: none;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus, textarea:focus, select:focus {
+            border-color: #0054e3;
+            box-shadow: 0 0 3px rgba(0, 84, 227, 0.4);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 75px;
+        }
+
+        /* Nested Files Section */
+        .files-section {
+            border: 1px dashed #a0a090;
+            background-color: #fcfcf9;
+            padding: 15px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .files-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .files-section-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #003399;
+        }
+
+        .file-entry {
+            background-color: #f1ebd9;
+            border: 1px solid #c0c0b0;
+            padding: 10px;
+            border-radius: 3px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .file-entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .btn-remove-file {
+            background: none;
+            border: none;
+            color: #d32f2f;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .btn-remove-file:hover {
+            text-decoration: underline;
+        }
+
+        /* Buttons styling */
+        .btn-xp {
+            padding: 5px 15px;
+            font-size: 12px;
+            font-weight: bold;
+            border: 1px solid #003c74;
+            border-radius: 3px;
+            cursor: pointer;
+            outline: none;
+            box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-primary {
+            background: var(--win-btn-green);
+            color: #ffffff;
+            border-color: #2e7d32;
+        }
+
+        .btn-primary:hover {
+            background: var(--win-btn-green-hover);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(to bottom, #ffffff 0%, #dcdad4 100%);
+            color: #333333;
+            border-color: #707070;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(to bottom, #ffffff 0%, #e2e0da 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(to bottom, #f28050 0%, #d32f2f 100%);
+            color: #ffffff;
+            border-color: #b71c1c;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(to bottom, #f44336 0%, #c62828 100%);
+        }
+
+        /* Alert styling */
+        .xp-alert {
+            display: none;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .xp-alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .xp-alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .xp-alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .xp-alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-top: 10px;
+            border: 1px solid #c0c0b0;
+        }
+
+        table th, table td {
+            padding: 8px;
+            text-align: right;
+            border: 1px solid #c0c0b0;
+        }
+
+        table thead tr {
+            background-color: #f1ebd9;
+            border-bottom: 2px solid #c0c0b0;
+            font-weight: bold;
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: #fcfcf9;
+        }
+
+        table tbody tr:hover {
+            background-color: #f5f0e1;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .action-btns button {
+            padding: 2px 6px;
+            font-size: 10px;
+        }
+
+        .xp-hr {
+            border: none;
+            border-top: 1px solid #a0a090;
+            border-bottom: 1px solid #ffffff;
+            margin: 15px 0;
+        }
+
+        /* Mobile layout styling */
+        @media (max-width: 650px) {
+            .info-layout {
+                flex-direction: column;
+            }
+            .sidebar-xp {
+                width: 100%;
+                border-left: none;
+                border-bottom: 1px solid #7496e6;
+            }
+            .main-content {
+                max-height: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="window">
+        <div class="title-bar">
+            <div class="title-bar-text">🛠️ لوحة تحكم وإدارة الموقع - Windows XP</div>
+            <div style="font-size: 10px; opacity: 0.8;">لوحة التحكم الكلاسيكية</div>
+        </div>
+
+        <div class="window-body">
+            <div class="info-layout">
+                <!-- Sidebar -->
+                <div class="sidebar-xp">
+                    <div class="sidebar-header">مهام لوحة التحكم</div>
+                    <div class="sidebar-links">
+                        <a href="#" class="sidebar-link active-link" onclick="switchSection('folders'); return false;" id="link-folders">📂 إدارة المجلدات والمشاريع</a>
+                        <a href="#" class="sidebar-link" onclick="switchSection('settings'); return false;" id="link-settings">⚙️ إعدادات الموقع والمظهر</a>
+                        <a href="#" class="sidebar-link" onclick="switchSection('sync'); return false;" id="link-sync">☁️ مزامنة GitHub والتخزين</a>
+                    </div>
+                    <hr class="xp-hr" style="border-top-color: #7496e6; border-bottom-color: #b8d2f5; margin: 10px 0;">
+                    <div class="sidebar-header">أماكن أخرى</div>
+                    <div class="sidebar-links">
+                        <a href="index.html" class="sidebar-link">◀ العودة إلى سطح المكتب</a>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="main-content">
+                    <!-- Global Alert Box -->
+                    <div id="alert-box" class="xp-alert"></div>
+
+                    <!-- 1. Folders Manager Section -->
+                    <div id="section-folders">
+                        <!-- List View -->
+                        <div id="folders-list-view">
+                            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0054e3; padding-bottom: 8px; margin-bottom: 15px;">
+                                <h3 style="color: #003399; font-size: 16px;">📁 إدارة مجلدات ومشاريع الموقع</h3>
+                                <button type="button" class="btn-xp btn-primary" onclick="openNewProjectForm()">+ إضافة مجلد جديد</button>
+                            </div>
+                            <p style="font-size: 11px; color: #666; margin-bottom: 15px;">يمكنك إضافة مجلدات جديدة إلى "مستنداتي"، تعديل محتوياتها وملفاتها الفرعية، أو حذفها بالكامل.</p>
+                            
+                            <table style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px; text-align: center;">الأيقونة</th>
+                                        <th>اسم المجلد / المشروع</th>
+                                        <th>الرمز المعرّف (ID)</th>
+                                        <th>التقنيات المستخدمة</th>
+                                        <th style="width: 130px; text-align: center;">العمليات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="projects-table-body">
+                                    <!-- Dynamic Rows -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Form View (Add/Edit) -->
+                        <div id="folder-form-view" style="display: none;">
+                            <div style="border-bottom: 2px solid #0054e3; padding-bottom: 8px; margin-bottom: 15px;">
+                                <h3 style="color: #003399; font-size: 16px;" id="folder-form-title">🧙‍♂️ معالج إعداد المجلد</h3>
+                            </div>
+                            
+                            <form id="project-form" onsubmit="event.preventDefault();">
+                                <input type="hidden" id="form-mode" value="new">
+                                
+                                <div class="form-group">
+                                    <label for="proj-id">رمز التعريف للمشروع (باللغة الإنجليزية ودون مسافات):</label>
+                                    <input type="text" id="proj-id" placeholder="مثال: myportfolio, chat_app" required pattern="^[a-zA-Z0-9_\-]+$">
+                                    <span style="font-size: 9px; color: #666;">لا يمكن تعديل هذا الرمز بعد إنشاء المجلد لضمان مرجعية الملفات.</span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="proj-title">اسم المشروع / المجلد (باللغة العربية):</label>
+                                    <input type="text" id="proj-title" placeholder="مثال: موقع أعمالي الشخصي" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="proj-icon">أيقونة المجلد (إيموجي):</label>
+                                    <select id="proj-icon">
+                                        <option value="📁">📁 مجلد كلاسيكي</option>
+                                        <option value="📂">📂 مجلد مفتوح</option>
+                                        <option value="🎮">🎮 ألعاب وترفيه</option>
+                                        <option value="🌐">🌐 موقع ويب</option>
+                                        <option value="💻">💻 تطبيق حاسوب</option>
+                                        <option value="📄">📄 مستند نصي</option>
+                                        <option value="🎨">🎨 تصميم ورسم</option>
+                                        <option value="📂">📂 ملفات مشاريع</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="proj-desc">وصف المشروع بالتفصيل:</label>
+                                    <textarea id="proj-desc" placeholder="اكتب ملخصاً يعبر عن أهداف هذا المشروع والمهام المنجزة فيه..." required></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="proj-tech">التقنيات المستخدمة (مفصولة بفاصلة):</label>
+                                    <input type="text" id="proj-tech" placeholder="مثال: React, Python, FastAPI" required>
+                                </div>
+
+                                <!-- Nested sub-files wrapper -->
+                                <div class="files-section">
+                                    <div class="files-section-header">
+                                        <span class="files-section-title">📄 مستندات فرعية داخل المجلد (اختياري)</span>
+                                        <button type="button" class="btn-xp btn-secondary" onclick="addFileField()" style="font-size: 10px; padding: 2px 6px;">+ إضافة ملف فرعي</button>
+                                    </div>
+                                    <div id="files-container">
+                                        <!-- Dynamic sub-files here -->
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid #d0d0c0; padding-top: 15px; margin-top: 15px;">
+                                    <button type="button" class="btn-xp btn-secondary" onclick="cancelFolderForm()">إلغاء وتراجع</button>
+                                    <button type="button" class="btn-xp btn-primary" onclick="submitProject()">حفظ التعديلات 💾</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- 2. Settings Section -->
+                    <div id="section-settings" style="display: none;">
+                        <div style="border-bottom: 2px solid #0054e3; padding-bottom: 8px; margin-bottom: 15px;">
+                            <h3 style="color: #003399; font-size: 16px;">⚙️ إعدادات الموقع والمظهر العام</h3>
+                        </div>
+                        <p style="font-size: 11px; color: #666; margin-bottom: 15px;">قم بتعديل بيانات المستخدم المعروضة في قائمة ابدأ، وتغيير خلفية سطح المكتب، ومواصفات النظام.</p>
+                        
+                        <form id="settings-form" onsubmit="event.preventDefault();">
+                            <h4 style="color: #003399; font-size: 12px; margin-bottom: 10px; border-bottom: 1px dashed #d0d0c0; padding-bottom: 3px;">👤 بيانات المستخدم (قائمة ابدأ)</h4>
+                            <div class="form-group">
+                                <label for="set-username">اسم المستخدم:</label>
+                                <input type="text" id="set-username" placeholder="Amjad" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="set-avatar">أيقونة المستخدم (إيموجي):</label>
+                                <input type="text" id="set-avatar" placeholder="👤" required style="width: 80px; text-align: center; font-size: 14px;">
+                            </div>
+
+                            <h4 style="color: #003399; font-size: 12px; margin-top: 20px; margin-bottom: 10px; border-bottom: 1px dashed #d0d0c0; padding-bottom: 3px;">🖥️ مواصفات الحاسوب (نافذة جهازي)</h4>
+                            <div class="form-group">
+                                <label for="set-os">نظام التشغيل:</label>
+                                <input type="text" id="set-os" placeholder="Passion OS v2026" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="set-cpu">المعالج (Processor):</label>
+                                <input type="text" id="set-cpu" placeholder="ذهن بشري متكامل (Human Brain) @ 3.80GHz" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="set-ram">الذاكرة العشوائية (RAM):</label>
+                                <input type="text" id="set-ram" placeholder="16.0 جيجابايت من العزيمة والإصرار" required>
+                            </div>
+
+                            <h4 style="color: #003399; font-size: 12px; margin-top: 20px; margin-bottom: 10px; border-bottom: 1px dashed #d0d0c0; padding-bottom: 3px;">🖼️ خلفية سطح المكتب</h4>
+                            <div class="form-group">
+                                <label for="set-wallpaper-select">اختر صورة الخلفية لسطح المكتب:</label>
+                                <select id="set-wallpaper-select" onchange="toggleCustomWallpaperInput(this.value)">
+                                    <option value="bliss_wallpaper.jpg">صورة Bliss الافتراضية (Windows XP)</option>
+                                    <option value="#008080">لون كلاسيكي (Teal Win98)</option>
+                                    <option value="#3a6ea5">أزرق رسمي (Classic Windows Blue)</option>
+                                    <option value="#2f57a6">أزرق داكن (Dark Blue)</option>
+                                    <option value="custom">رابط صورة مخصص من الإنترنت...</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="custom-wallpaper-group" style="display: none;">
+                                <label for="set-wallpaper-url">رابط الصورة المباشر (URL):</label>
+                                <input type="text" id="set-wallpaper-url" placeholder="https://example.com/my-wallpaper.jpg">
+                            </div>
+
+                            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; border-top: 1px solid #d0d0c0; padding-top: 15px;">
+                                <button type="button" class="btn-xp btn-secondary" onclick="loadSiteSettingsIntoForm()">إلغاء التعديل</button>
+                                <button type="button" class="btn-xp btn-primary" onclick="saveSiteSettings()">حفظ إعدادات المظهر 💾</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- 3. GitHub Sync Section -->
+                    <div id="section-sync" style="display: none;">
+                        <div style="border-bottom: 2px solid #0054e3; padding-bottom: 8px; margin-bottom: 15px;">
+                            <h3 style="color: #003399; font-size: 16px;">☁️ إعدادات مزامنة GitHub والتخزين الاحتياطي</h3>
+                        </div>
+                        <p style="font-size: 11px; color: #555; margin-bottom: 15px; line-height: 1.4;">
+                            عند إعداد المزامنة مع GitHub، سيتم تلقائياً تحديث ملف البيانات <code>projects-data.js</code> في مستودع الأكواد الخاص بك بمجرد إضافة أو تعديل أو حذف أي مجلد، لتنعكس التعديلات مباشرة على موقعك المستضاف!
+                        </p>
+                        
+                        <div style="background-color: #f0f4f9; border: 1px solid #b0c4de; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+                            <h4 style="font-size: 12px; font-weight: bold; color: #003399; margin-bottom: 10px;">⚙️ إعدادات ربط GitHub API</h4>
+                            <div class="form-group">
+                                <label>اسم المستخدم في GitHub:</label>
+                                <input type="text" id="gh-username" placeholder="مثال: developer-amjad">
+                            </div>
+                            <div class="form-group">
+                                <label>اسم المستودع (Repository Name):</label>
+                                <input type="text" id="gh-repo" placeholder="مثال: my-website">
+                            </div>
+                            <div class="form-group">
+                                <label>الفرع النشط (Branch):</label>
+                                <input type="text" id="gh-branch" value="main">
+                            </div>
+                            <div class="form-group">
+                                <label>رمز الوصول الشخصي (GitHub PAT):</label>
+                                <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxx">
+                                <span style="font-size: 9px; color: #d32f2f; display: block; margin-top: 2px;">تأكد من تفعيل صلاحية (Contents: Write) للرمز ليتمكن من كتابة وحفظ الملفات.</span>
+                            </div>
+                            <div style="display: flex; gap: 8px; margin-top: 15px;">
+                                <button type="button" class="btn-xp btn-primary" onclick="saveGHConfig()">حفظ وتفعيل الربط ⚡</button>
+                                <button type="button" class="btn-xp btn-secondary" onclick="clearGHConfig()">مسح إعدادات الربط</button>
+                            </div>
+                        </div>
+
+                        <div style="background-color: #e8f5e9; border: 1px solid #a5d6a7; padding: 15px; border-radius: 4px;">
+                            <h4 style="color: #2e7d32; font-size: 12px; margin-bottom: 5px;">💾 خيارات التخزين الاحتياطي والاستعادة</h4>
+                            <p style="font-size: 10px; color: #388e3c; margin-bottom: 10px;">إذا كنت تستضف موقعك محلياً أو لا ترغب باستخدام GitHub، يمكنك تنزيل ملف تحديث البيانات ووضعه في مجلد الموقع يدوياً، أو استعادة المجلدات الافتراضية.</p>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button type="button" class="btn-xp btn-secondary" onclick="downloadProjectsJS()">⬇️ تحميل ملف projects-data.js</button>
+                                <button type="button" class="btn-xp btn-danger" onclick="resetToDefaults()">⚠️ استعادة المجلدات الافتراضية ومسح التعديلات</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="projects-data.js"></script>
+    <script>
+        // Global variables
+        let fileIndex = 0;
+        let activeSection = 'folders';
+
+        // Load data on start
+        document.addEventListener('DOMContentLoaded', () => {
+            loadGHConfig();
+            renderAdminProjects();
+            loadSiteSettingsIntoForm();
+        });
+
+        // Toggle sections in Admin Panel
+        function switchSection(sectionId) {
+            activeSection = sectionId;
+            
+            // Hide all sections
+            document.getElementById('section-folders').style.display = 'none';
+            document.getElementById('section-settings').style.display = 'none';
+            document.getElementById('section-sync').style.display = 'none';
+            
+            // Show active section
+            document.getElementById(`section-${sectionId}`).style.display = 'block';
+            
+            // Update sidebar links
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                link.classList.remove('active-link');
+            });
+            document.getElementById(`link-${sectionId}`).classList.add('active-link');
+
+            // Hide alert when switching tabs
+            hideAlert();
+
+            // Special actions on tab load
+            if (sectionId === 'folders') {
+                cancelFolderForm();
+                renderAdminProjects();
+            } else if (sectionId === 'settings') {
+                loadSiteSettingsIntoForm();
+            }
+        }
+
+        // Retrieve projects from local storage or original data
+        function getProjects() {
+            let stored = localStorage.getItem('projects_data');
+            if (stored) {
+                try {
+                    return JSON.parse(stored);
+                } catch(e) {
+                    console.error("Error parsing projects_data", e);
+                }
+            }
+            const baseProjects = (typeof PROJECTS_DATA !== 'undefined' && Array.isArray(PROJECTS_DATA)) ? PROJECTS_DATA : [];
+            let customProjects = [];
+            try {
+                customProjects = JSON.parse(localStorage.getItem('custom_projects')) || [];
+            } catch (e) {}
+            if (customProjects.length > 0) {
+                const merged = [...baseProjects, ...customProjects];
+                localStorage.setItem('projects_data', JSON.stringify(merged));
+                localStorage.removeItem('custom_projects'); // Clean legacy format
+                return merged;
+            }
+            return baseProjects;
+        }
+
+        // Render projects list inside Table
+        function renderAdminProjects() {
+            const tbody = document.getElementById('projects-table-body');
+            tbody.innerHTML = '';
+            
+            const projects = getProjects();
+            
+            if (projects.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #777; font-style: italic;">لا توجد مجلدات حالياً. أضف مجلدات جديدة!</td></tr>`;
+                return;
+            }
+            
+            projects.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="text-align: center; font-size: 16px;">${p.icon || '📁'}</td>
+                    <td style="font-weight: bold; color: #003399;">${p.title}</td>
+                    <td style="font-family: monospace;">${p.id}</td>
+                    <td style="color: #555;">${p.technologies || '-'}</td>
+                    <td class="action-btns">
+                        <button type="button" class="btn-xp btn-secondary" onclick="editProject('${p.id}')">تعديل 📝</button>
+                        <button type="button" class="btn-xp btn-danger" style="padding: 2px 6px;" onclick="deleteProject('${p.id}')">حذف ❌</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Add File Field UI in wizard
+        function addFileField(name = '', content = '', type = 'txt') {
+            fileIndex++;
+            const container = document.getElementById('files-container');
+            const fileEntry = document.createElement('div');
+            fileEntry.className = 'file-entry';
+            fileEntry.id = `file-entry-${fileIndex}`;
+            
+            fileEntry.innerHTML = `
+                <div class="file-entry-header">
+                    <label>مستند فرعي #${fileIndex}</label>
+                    <button type="button" class="btn-remove-file" onclick="removeFileField(${fileIndex})">إزالة ✕</button>
+                </div>
+                <div class="form-group" style="margin-bottom: 8px;">
+                    <label>نوع الملف:</label>
+                    <select class="sub-file-type" onchange="toggleFileContentInput(${fileIndex}, this.value)">
+                        <option value="txt" ${type === 'txt' ? 'selected' : ''}>📄 مستند نصي (.txt)</option>
+                        <option value="img" ${type === 'img' ? 'selected' : ''}>🖼️ صورة (.png, .jpg, .gif)</option>
+                        <option value="audio" ${type === 'audio' ? 'selected' : ''}>🎵 ملف صوتي (.mp3, .wav)</option>
+                        <option value="lnk" ${type === 'lnk' ? 'selected' : ''}>🔗 رابط خارجي (.lnk)</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 8px;">
+                    <label>اسم الملف (دون كتابة الامتداد):</label>
+                    <input type="text" class="sub-file-name" placeholder="مثال: تفاصيل_المشروع" value="${name.split('.')[0] || ''}" required>
+                </div>
+                <div class="form-group" id="file-content-group-${fileIndex}" style="margin-bottom: 0;">
+                    <label id="file-content-label-${fileIndex}">محتويات الملف النصي:</label>
+                    <textarea class="sub-file-content" placeholder="اكتب نصوصاً هنا..." required>${content}</textarea>
+                </div>
+            `;
+            container.appendChild(fileEntry);
+            
+            // If it's not a text file, initialize the inputs correctly
+            if (type !== 'txt') {
+                toggleFileContentInput(fileIndex, type, content);
+            }
+        }
+
+        // Toggle sub-file content field based on type
+        function toggleFileContentInput(index, value, contentVal = '') {
+            const inputContainer = document.getElementById(`file-content-group-${index}`);
+            
+            if (value === 'txt') {
+                inputContainer.innerHTML = `
+                    <label id="file-content-label-${index}">محتويات الملف النصي:</label>
+                    <textarea class="sub-file-content" placeholder="اكتب نصوصاً أو روابط هنا..." required>${contentVal}</textarea>
+                `;
+            } else {
+                let placeholderText = "رابط الصورة المباشر (مثل: https://picsum.photos/400/300)";
+                let labelText = "رابط الصورة (URL):";
+                if (value === 'audio') {
+                    placeholderText = "رابط الملف الصوتي المباشر (مثل: https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3)";
+                    labelText = "رابط الملف الصوتي (URL):";
+                } else if (value === 'lnk') {
+                    placeholderText = "رابط الموقع الإلكتروني (مثل: https://github.com/developer-amjad)";
+                    labelText = "رابط الموقع (URL):";
+                }
+                
+                inputContainer.innerHTML = `
+                    <label id="file-content-label-${index}">${labelText}</label>
+                    <input type="text" class="sub-file-content" value="${contentVal}" placeholder="${placeholderText}" required style="width: 100%; padding: 6px; font-size: 12px; border: 1px solid #7f9db9; border-radius: 2px; outline: none;">
+                `;
+            }
+        }
+
+        function removeFileField(index) {
+            const entry = document.getElementById(`file-entry-${index}`);
+            if (entry) entry.remove();
+        }
+
+        // Open Form to Add New Project
+        function openNewProjectForm() {
+            document.getElementById('project-form').reset();
+            document.getElementById('files-container').innerHTML = '';
+            document.getElementById('form-mode').value = 'new';
+            document.getElementById('proj-id').disabled = false;
+            document.getElementById('folder-form-title').textContent = '🧙‍♂️ معالج إنشاء مجلد جديد';
+            
+            document.getElementById('folders-list-view').style.display = 'none';
+            document.getElementById('folder-form-view').style.display = 'block';
+            hideAlert();
+        }
+
+        // Open Form to Edit Existing Project
+        function editProject(id) {
+            const projects = getProjects();
+            const project = projects.find(p => p.id === id);
+            if (!project) return;
+
+            document.getElementById('form-mode').value = 'edit';
+            document.getElementById('proj-id').value = project.id;
+            document.getElementById('proj-id').disabled = true; // Block editing ID
+            document.getElementById('proj-title').value = project.title || '';
+            document.getElementById('proj-icon').value = project.icon || '📁';
+            document.getElementById('proj-desc').value = project.description || '';
+            document.getElementById('proj-tech').value = project.technologies || '';
+
+            // Clean previous files inputs
+            document.getElementById('files-container').innerHTML = '';
+            
+            // Add existing files
+            if (project.files && project.files.length > 0) {
+                project.files.forEach(f => {
+                    const ext = f.name.split('.').pop().toLowerCase();
+                    let type = 'txt';
+                    if (['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(ext)) type = 'img';
+                    else if (['mp3', 'wav', 'ogg'].includes(ext)) type = 'audio';
+                    else if (['lnk', 'html', 'url'].includes(ext)) type = 'lnk';
+                    
+                    addFileField(f.name, f.content, type);
+                });
+            }
+
+            document.getElementById('folder-form-title').textContent = `📝 تعديل المجلد: ${project.title}`;
+            document.getElementById('folders-list-view').style.display = 'none';
+            document.getElementById('folder-form-view').style.display = 'block';
+            hideAlert();
+        }
+
+        function cancelFolderForm() {
+            document.getElementById('folders-list-view').style.display = 'block';
+            document.getElementById('folder-form-view').style.display = 'none';
+        }
+
+        // Delete Folder/Project
+        async function deleteProject(id) {
+            const projects = getProjects();
+            const project = projects.find(p => p.id === id);
+            if (!project) return;
+            
+            if (confirm(`هل أنت متأكد من رغبتك في حذف المجلد "${project.title}" بالكامل بجميع ملفاته؟`)) {
+                const updatedList = projects.filter(p => p.id !== id);
+                await saveLocalAndSync(updatedList);
+                renderAdminProjects();
+            }
+        }
+
+        // Handle Folder Form Submission
+        async function submitProject() {
+            const form = document.getElementById('project-form');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const id = document.getElementById('proj-id').value.trim();
+            const title = document.getElementById('proj-title').value.trim();
+            const icon = document.getElementById('proj-icon').value;
+            const description = document.getElementById('proj-desc').value.trim();
+            const technologies = document.getElementById('proj-tech').value.trim();
+            const mode = document.getElementById('form-mode').value;
+
+            // Collect files
+            const files = [];
+            const fileEntries = document.querySelectorAll('.file-entry');
+            let filesValid = true;
+
+            fileEntries.forEach(entry => {
+                const nameInput = entry.querySelector('.sub-file-name');
+                const contentInput = entry.querySelector('.sub-file-content');
+                const typeSelect = entry.querySelector('.sub-file-type');
+                
+                let name = nameInput.value.trim();
+                const content = contentInput.value.trim();
+                const type = typeSelect.value;
+                
+                if (!name || !content) {
+                    filesValid = false;
+                    nameInput.reportValidity();
+                    contentInput.reportValidity();
+                    return;
+                }
+                
+                const extensions = { txt: '.txt', img: '.png', audio: '.mp3', lnk: '.lnk' };
+                const requiredExt = extensions[type];
+                
+                // Clear any manual extensions
+                Object.values(extensions).forEach(ext => {
+                    if (name.toLowerCase().endsWith(ext)) {
+                        name = name.substring(0, name.length - ext.length);
+                    }
+                });
+                
+                name += requiredExt;
+                files.push({ name, content });
+            });
+
+            if (!filesValid) return;
+
+            const projectObj = { id, title, icon, description, technologies, files };
+            let projects = getProjects();
+
+            if (mode === 'new') {
+                // Check unique ID
+                if (projects.some(p => p.id === id)) {
+                    showAlert(`خطأ: معرّف المجلد "${id}" مستخدم بالفعل، يرجى اختيار رمز تعريف آخر.`, 'danger');
+                    return;
+                }
+                projects.push(projectObj);
+            } else {
+                // Edit mode
+                projects = projects.map(p => p.id === id ? projectObj : p);
+            }
+
+            const success = await saveLocalAndSync(projects);
+            if (success) {
+                cancelFolderForm();
+                renderAdminProjects();
+            }
+        }
+
+        // Save local projects list & attempt to sync with GitHub / File System Access API
+        async function saveLocalAndSync(updatedProjects) {
+            localStorage.setItem('projects_data', JSON.stringify(updatedProjects));
+            
+            const ghUser = localStorage.getItem('gh_username');
+            const ghRepo = localStorage.getItem('gh_repo');
+            const ghToken = localStorage.getItem('gh_token');
+
+            if (ghUser && ghRepo && ghToken) {
+                try {
+                    await saveAllToGitHub(updatedProjects);
+                    showAlert('تم حفظ التعديلات بنجاح وتحديثها في مستودع GitHub!', 'success');
+                    return true;
+                } catch (err) {
+                    showAlert(`تم الحفظ محلياً في المتصفح فقط. فشلت المزامنة مع GitHub: ${err.message}`, 'danger');
+                    return true; // We saved locally
+                }
+            }
+            
+            // Check if running in a context where File System API is supported
+            if (typeof window.showOpenFilePicker !== 'undefined') {
+                if (confirm('المزامنة مع GitHub غير مفعلة. هل تود حفظ التغييرات مباشرة في ملف "projects-data.js" على جهازك ليعمل التعديل بشكل دائم؟')) {
+                    try {
+                        const [fileHandle] = await window.showOpenFilePicker({
+                            suggestedName: 'projects-data.js',
+                            types: [{
+                                description: 'JavaScript Files',
+                                accept: { 'application/javascript': ['.js'] }
+                            }],
+                            excludeAcceptAllOption: true,
+                            multiple: false
+                        });
+                        const writable = await fileHandle.createWritable();
+                        const fileContent = `// قائمة مشاريع مستنداتي (My Documents Projects)
+// يمكنك تعديل المشاريع القائمة، حذفها، أو إضافة مشاريع جديدة هنا بسهولة!
+// سيقوم الموقع بتحديث العناصر تلقائياً بناءً على هذه البيانات.
+
+const PROJECTS_DATA = ${JSON.stringify(updatedProjects, null, 4)};
+`;
+                        await writable.write(fileContent);
+                        await writable.close();
+                        showAlert('تم حفظ التغييرات في المتصفح وفي ملف "projects-data.js" بنجاح!', 'success');
+                        return true;
+                    } catch (fsErr) {
+                        if (fsErr.name !== 'AbortError') {
+                            showAlert(`تم الحفظ محلياً في المتصفح فقط. فشل تحديث الملف المادي: ${fsErr.message}`, 'warning');
+                        }
+                    }
+                }
+            } else {
+                showAlert('تم حفظ التعديلات محلياً في المتصفح بنجاح! لتطبيقها بشكل دائم على الخادم، يرجى تنزيل ملف projects-data.js من تبويب المزامنة ووضعه في مجلد موقعك.', 'success');
+            }
+            return true;
+        }
+
+        // Sync all projects with GitHub Content API
+        async function saveAllToGitHub(updatedList) {
+            const username = localStorage.getItem('gh_username');
+            const repo = localStorage.getItem('gh_repo');
+            const branch = localStorage.getItem('gh_branch') || 'main';
+            const token = localStorage.getItem('gh_token');
+            
+            const path = 'projects-data.js';
+            const url = `https://api.github.com/repos/${username}/${repo}/contents/${path}`;
+            
+            showAlert('جاري الاتصال بـ GitHub وجلب بيانات الملف...', 'info');
+            
+            const getRes = await fetch(`${url}?ref=${branch}`, {
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            
+            if (!getRes.ok) {
+                if (getRes.status === 404) {
+                    throw new Error(`الملف ${path} غير موجود في المستودع المحدد.`);
+                } else {
+                    const errData = await getRes.json();
+                    throw new Error(errData.message || 'فشل جلب الملف من GitHub.');
+                }
+            }
+            
+            const fileData = await getRes.json();
+            const currentSHA = fileData.sha;
+            
+            const fileContent = `// قائمة مشاريع مستنداتي (My Documents Projects)
+// يمكنك تعديل المشاريع القائمة، حذفها، أو إضافة مشاريع جديدة هنا بسهولة!
+// سيقوم الموقع بتحديث العناصر تلقائياً بناءً على هذه البيانات.
+
+const PROJECTS_DATA = ${JSON.stringify(updatedList, null, 4)};
+`;
+            
+            const encodedContent = btoa(unescape(encodeURIComponent(fileContent)));
+            
+            showAlert('جاري رفع وتحديث الملف على مستودع GitHub...', 'info');
+            
+            const putRes = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify({
+                    message: `تعديل وإدارة المجلدات والمشاريع (عبر لوحة التحكم)`,
+                    content: encodedContent,
+                    sha: currentSHA,
+                    branch: branch
+                })
+            });
+            
+            if (!putRes.ok) {
+                const errData = await putRes.json();
+                throw new Error(errData.message || 'فشل رفع الملف إلى GitHub.');
+            }
+            
+            return true;
+        }
+
+        // --- Site Settings Functions ---
+        function toggleCustomWallpaperInput(value) {
+            const customGroup = document.getElementById('custom-wallpaper-group');
+            if (value === 'custom') {
+                customGroup.style.display = 'flex';
+            } else {
+                customGroup.style.display = 'none';
+            }
+        }
+
+        function loadSiteSettingsIntoForm() {
+            let settings = {
+                username: "Amjad",
+                avatar: "👤",
+                os_name: "Passion OS v2026",
+                cpu: "ذهن بشري متكامل (Human Brain) @ 3.80GHz",
+                ram: "16.0 جيجابايت من العزيمة والإصرار",
+                wallpaper: "bliss_wallpaper.jpg"
+            };
+            try {
+                const stored = localStorage.getItem('site_settings');
+                if (stored) {
+                    settings = { ...settings, ...JSON.parse(stored) };
+                }
+            } catch (e) {}
+            
+            document.getElementById('set-username').value = settings.username;
+            document.getElementById('set-avatar').value = settings.avatar;
+            document.getElementById('set-os').value = settings.os_name;
+            document.getElementById('set-cpu').value = settings.cpu;
+            document.getElementById('set-ram').value = settings.ram;
+            
+            const wallpaperSelect = document.getElementById('set-wallpaper-select');
+            const customUrlInput = document.getElementById('set-wallpaper-url');
+            
+            if (['bliss_wallpaper.jpg', '#008080', '#3a6ea5', '#2f57a6'].includes(settings.wallpaper)) {
+                wallpaperSelect.value = settings.wallpaper;
+                customUrlInput.value = '';
+                toggleCustomWallpaperInput(settings.wallpaper);
+            } else {
+                wallpaperSelect.value = 'custom';
+                customUrlInput.value = settings.wallpaper || '';
+                toggleCustomWallpaperInput('custom');
+            }
+            hideAlert();
+        }
+
+        function saveSiteSettings() {
+            const form = document.getElementById('settings-form');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const username = document.getElementById('set-username').value.trim();
+            const avatar = document.getElementById('set-avatar').value.trim();
+            const os_name = document.getElementById('set-os').value.trim();
+            const cpu = document.getElementById('set-cpu').value.trim();
+            const ram = document.getElementById('set-ram').value.trim();
+            const wallpaperSelect = document.getElementById('set-wallpaper-select').value;
+            
+            let wallpaper = wallpaperSelect;
+            if (wallpaperSelect === 'custom') {
+                wallpaper = document.getElementById('set-wallpaper-url').value.trim();
+                if (!wallpaper) {
+                    showAlert('يرجى إدخال رابط الصورة المخصصة.', 'danger');
+                    return;
+                }
+            }
+            
+            const settings = { username, avatar, os_name, cpu, ram, wallpaper };
+            localStorage.setItem('site_settings', JSON.stringify(settings));
+            showAlert('تم حفظ إعدادات مظهر الموقع بنجاح! سيتم تطبيقها فوراً عند العودة إلى سطح المكتب.', 'success');
+        }
+
+        function resetSettingsForm() {
+            loadSiteSettingsIntoForm();
+            showAlert('تم إلغاء التغييرات واستعادة الإعدادات الحالية.', 'info');
+        }
+
+        // --- GitHub Config Functions ---
+        function saveGHConfig() {
+            const user = document.getElementById('gh-username').value.trim();
+            const repo = document.getElementById('gh-repo').value.trim();
+            const branch = document.getElementById('gh-branch').value.trim() || 'main';
+            const token = document.getElementById('gh-token').value.trim();
+
+            if (!user || !repo || !token) {
+                showAlert('يرجى تعبئة كافة حقول الربط لحفظ الإعدادات.', 'danger');
+                return;
+            }
+
+            localStorage.setItem('gh_username', user);
+            localStorage.setItem('gh_repo', repo);
+            localStorage.setItem('gh_branch', branch);
+            localStorage.setItem('gh_token', token);
+
+            showAlert('تم حفظ إعدادات GitHub بنجاح وتفعيل التوصيل!', 'success');
+        }
+
+        function clearGHConfig() {
+            localStorage.removeItem('gh_username');
+            localStorage.removeItem('gh_repo');
+            localStorage.removeItem('gh_branch');
+            localStorage.removeItem('gh_token');
+            
+            document.getElementById('gh-username').value = '';
+            document.getElementById('gh-repo').value = '';
+            document.getElementById('gh-branch').value = 'main';
+            document.getElementById('gh-token').value = '';
+            
+            showAlert('تم مسح إعدادات المزامنة مع GitHub.', 'info');
+        }
+
+        function loadGHConfig() {
+            document.getElementById('gh-username').value = localStorage.getItem('gh_username') || '';
+            document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
+            document.getElementById('gh-branch').value = localStorage.getItem('gh_branch') || 'main';
+            document.getElementById('gh-token').value = localStorage.getItem('gh_token') || '';
+        }
+
+        // --- Backup & Manual Functions ---
+        function downloadProjectsJS() {
+            const projects = getProjects();
+            const fileContent = `// قائمة مشاريع مستنداتي (My Documents Projects)
+// يمكنك تعديل المشاريع القائمة، حذفها، أو إضافة مشاريع جديدة هنا بسهولة!
+// سيقوم الموقع بتحديث العناصر تلقائياً بناءً على هذه البيانات.
+
+const PROJECTS_DATA = ${JSON.stringify(projects, null, 4)};
+`;
+            const blob = new Blob([fileContent], { type: "application/javascript;charset=utf-8" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "projects-data.js";
+            link.click();
+            showAlert('تم تجهيز الملف وتنزيله بنجاح! ضعه في مجلد موقعك الرئيسي.', 'success');
+        }
+
+        function resetToDefaults() {
+            if (confirm("تحذير: هل أنت متأكد من رغبتك في حذف كافة التعديلات، والمجلدات المضافة، وإعدادات الموقع واستعادة النسخة الافتراضية؟")) {
+                localStorage.removeItem('projects_data');
+                localStorage.removeItem('custom_projects');
+                localStorage.removeItem('site_settings');
+                
+                showAlert('تم إعادة تهيئة الموقع للإعدادات الافتراضية بنجاح. جاري إعادة تحميل الصفحة...', 'success');
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            }
+        }
+
+        // --- Alert Helper ---
+        function showAlert(msg, type) {
+            const alertBox = document.getElementById('alert-box');
+            alertBox.textContent = msg;
+            alertBox.className = `xp-alert xp-alert-${type}`;
+            alertBox.style.display = 'block';
+            alertBox.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function hideAlert() {
+            document.getElementById('alert-box').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
