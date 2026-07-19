@@ -2,16 +2,7 @@
 // يمكنك تعديل المشاريع القائمة، حذفها، أو إضافة مشاريع جديدة هنا بسهولة!
 // سيقوم الموقع بتحديث العناصر تلقائياً بناءً على هذه البيانات.
 
-const PROJECTS_DATA = [
-    {
-        "id": "GEWGE",
-        "title": "GEGEGEG",
-        "icon": "📁",
-        "description": "GEGEGE",
-        "technologies": "EGGE",
-        "files": []
-    }
-];
+const PROJECTS_DATA = [];
 
 const SITE_SETTINGS = {
     "username": "KAL",
@@ -19,5 +10,5 @@ const SITE_SETTINGS = {
     "os_name": "Passion OS v2026",
     "cpu": "ذهن بشري متكامل (Human Brain) @ 3.80GHz",
     "ram": "16.0 جيجابايت من العزيمة والإصرار",
-    "wallpaper": "bliss_wallpaper.jpg"
+    "wallpaper": "#3a6ea5"
 };
