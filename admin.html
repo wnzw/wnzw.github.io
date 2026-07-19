@@ -895,6 +895,17 @@
             const ghRepo = localStorage.getItem('gh_repo');
             const ghToken = localStorage.getItem('gh_token');
 
+            // Format projects-data.js content
+            const settings = getSiteSettings();
+            const fileContent = `// قائمة مشاريع مستنداتي (My Documents Projects)
+// يمكنك تعديل المشاريع القائمة، حذفها، أو إضافة مشاريع جديدة هنا بسهولة!
+// سيقوم الموقع بتحديث العناصر تلقائياً بناءً على هذه البيانات.
+
+const PROJECTS_DATA = ${JSON.stringify(updatedProjects, null, 4)};
+
+const SITE_SETTINGS = ${JSON.stringify(settings, null, 4)};
+`;
+
             if (ghUser && ghRepo && ghToken) {
                 try {
                     await saveAllToGitHub(updatedProjects);
@@ -920,12 +931,6 @@
                             multiple: false
                         });
                         const writable = await fileHandle.createWritable();
-                        const fileContent = `// قائمة مشاريع مستنداتي (My Documents Projects)
-// يمكنك تعديل المشاريع القائمة، حذفها، أو إضافة مشاريع جديدة هنا بسهولة!
-// سيقوم الموقع بتحديث العناصر تلقائياً بناءً على هذه البيانات.
-
-const PROJECTS_DATA = ${JSON.stringify(updatedProjects, null, 4)};
-`;
                         await writable.write(fileContent);
                         await writable.close();
                         showAlert('تم حفظ التغييرات في المتصفح وفي ملف "projects-data.js" بنجاح!', 'success');
@@ -973,11 +978,14 @@ const PROJECTS_DATA = ${JSON.stringify(updatedProjects, null, 4)};
             const fileData = await getRes.json();
             const currentSHA = fileData.sha;
             
+            const settings = getSiteSettings();
             const fileContent = `// قائمة مشاريع مستنداتي (My Documents Projects)
 // يمكنك تعديل المشاريع القائمة، حذفها، أو إضافة مشاريع جديدة هنا بسهولة!
 // سيقوم الموقع بتحديث العناصر تلقائياً بناءً على هذه البيانات.
 
 const PROJECTS_DATA = ${JSON.stringify(updatedList, null, 4)};
+
+const SITE_SETTINGS = ${JSON.stringify(settings, null, 4)};
 `;
             
             const encodedContent = btoa(unescape(encodeURIComponent(fileContent)));
@@ -1017,7 +1025,7 @@ const PROJECTS_DATA = ${JSON.stringify(updatedList, null, 4)};
             }
         }
 
-        function loadSiteSettingsIntoForm() {
+        function getSiteSettings() {
             let settings = {
                 username: "Amjad",
                 avatar: "👤",
@@ -1026,12 +1034,22 @@ const PROJECTS_DATA = ${JSON.stringify(updatedList, null, 4)};
                 ram: "16.0 جيجابايت من العزيمة والإصرار",
                 wallpaper: "bliss_wallpaper.jpg"
             };
+            
+            if (typeof SITE_SETTINGS !== 'undefined' && SITE_SETTINGS) {
+                settings = { ...settings, ...SITE_SETTINGS };
+            }
+            
             try {
                 const stored = localStorage.getItem('site_settings');
                 if (stored) {
                     settings = { ...settings, ...JSON.parse(stored) };
                 }
             } catch (e) {}
+            return settings;
+        }
+
+        function loadSiteSettingsIntoForm() {
+            const settings = getSiteSettings();
             
             document.getElementById('set-username').value = settings.username;
             document.getElementById('set-avatar').value = settings.avatar;
@@ -1054,7 +1072,7 @@ const PROJECTS_DATA = ${JSON.stringify(updatedList, null, 4)};
             hideAlert();
         }
 
-        function saveSiteSettings() {
+        async function saveSiteSettings() {
             const form = document.getElementById('settings-form');
             if (!form.checkValidity()) {
                 form.reportValidity();
@@ -1079,7 +1097,13 @@ const PROJECTS_DATA = ${JSON.stringify(updatedList, null, 4)};
             
             const settings = { username, avatar, os_name, cpu, ram, wallpaper };
             localStorage.setItem('site_settings', JSON.stringify(settings));
-            showAlert('تم حفظ إعدادات مظهر الموقع بنجاح! سيتم تطبيقها فوراً عند العودة إلى سطح المكتب.', 'success');
+            
+            const currentProjects = getProjects();
+            showAlert('جاري حفظ إعدادات المظهر ورفعها...', 'info');
+            const success = await saveLocalAndSync(currentProjects);
+            if (success) {
+                showAlert('تم حفظ إعدادات مظهر الموقع ورفعها إلى GitHub بنجاح! سيتم تطبيقها فوراً عند العودة إلى سطح المكتب.', 'success');
+            }
         }
 
         function resetSettingsForm() {
@@ -1131,11 +1155,14 @@ const PROJECTS_DATA = ${JSON.stringify(updatedList, null, 4)};
         // --- Backup & Manual Functions ---
         function downloadProjectsJS() {
             const projects = getProjects();
+            const settings = getSiteSettings();
             const fileContent = `// قائمة مشاريع مستنداتي (My Documents Projects)
 // يمكنك تعديل المشاريع القائمة، حذفها، أو إضافة مشاريع جديدة هنا بسهولة!
 // سيقوم الموقع بتحديث العناصر تلقائياً بناءً على هذه البيانات.
 
 const PROJECTS_DATA = ${JSON.stringify(projects, null, 4)};
+
+const SITE_SETTINGS = ${JSON.stringify(settings, null, 4)};
 `;
             const blob = new Blob([fileContent], { type: "application/javascript;charset=utf-8" });
             const link = document.createElement("a");

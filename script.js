@@ -48,6 +48,12 @@ function loadSiteSettings() {
         ram: "16.0 جيجابايت من العزيمة والإصرار",
         wallpaper: "bliss_wallpaper.jpg"
     };
+    
+    // Load from global SITE_SETTINGS in projects-data.js if available
+    if (typeof SITE_SETTINGS !== 'undefined' && SITE_SETTINGS) {
+        settings = { ...settings, ...SITE_SETTINGS };
+    }
+    
     try {
         const stored = localStorage.getItem('site_settings');
         if (stored) {
