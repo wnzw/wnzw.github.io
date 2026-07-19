@@ -525,17 +525,53 @@ function openProject(id) {
 function getFileDetails(filename, content) {
     const ext = filename.split('.').pop().toLowerCase();
     
+    // Map extension to emoji icon
+    let icon = '📄'; // Default icon
     if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
-        return { icon: '🖼️', action: openImageViewer };
-    } else if (['mp3', 'wav', 'ogg'].includes(ext)) {
-        return { icon: '🎵', action: openMediaPlayer };
-    } else if (['zip', 'rar', 'pdf', 'docx', 'xlsx', 'pptx', 'exe', 'dmg', 'tar', 'gz'].includes(ext)) {
-        return { icon: '📥', action: openDownloadFile };
-    } else if (['lnk', 'html', 'url'].includes(ext) || (content && (content.startsWith('http://') || content.startsWith('https://')))) {
-        return { icon: '🔗', action: openIEWithURL };
-    } else {
-        return { icon: '📄', action: openNotepadWithFile };
+        icon = '🖼️';
+    } else if (['mp3', 'wav', 'ogg', 'm4a'].includes(ext)) {
+        icon = '🎵';
+    } else if (['mp4', 'avi', 'mkv', 'mov'].includes(ext)) {
+        icon = '🎥';
+    } else if (['zip', 'rar', 'tar', 'gz', '7z'].includes(ext)) {
+        icon = '📦';
+    } else if (['pdf'].includes(ext)) {
+        icon = '📕';
+    } else if (['doc', 'docx'].includes(ext)) {
+        icon = '🟦'; // Word-like blue icon
+    } else if (['xls', 'xlsx'].includes(ext)) {
+        icon = '🟩'; // Excel-like green icon
+    } else if (['ppt', 'pptx'].includes(ext)) {
+        icon = '🟧'; // PowerPoint-like orange icon
+    } else if (['py'].includes(ext)) {
+        icon = '🐍'; // Python icon!
+    } else if (['js', 'jsx', 'ts', 'tsx'].includes(ext)) {
+        icon = '🟨'; // JS yellow icon!
+    } else if (['html', 'htm'].includes(ext)) {
+        icon = '🌐'; // HTML web icon!
+    } else if (['css'].includes(ext)) {
+        icon = '🎨'; // CSS style icon!
+    } else if (['json'].includes(ext)) {
+        icon = '⚙️'; // JSON configuration icon!
+    } else if (['exe', 'msi', 'dmg', 'sh', 'bat'].includes(ext)) {
+        icon = '💿'; // Executable installation icon!
+    } else if (['lnk', 'url'].includes(ext) || (content && (content.startsWith('http://') || content.startsWith('https://')))) {
+        icon = '🔗';
     }
+    
+    // Map extension to double-click action
+    let action = openDownloadFile; // Default action is downloading the file
+    if (ext === 'txt') {
+        action = openNotepadWithFile;
+    } else if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+        action = openImageViewer;
+    } else if (['mp3', 'wav', 'ogg'].includes(ext)) {
+        action = openMediaPlayer;
+    } else if (['lnk', 'html', 'url'].includes(ext) || (content && (content.startsWith('http://') || content.startsWith('https://')))) {
+        action = openIEWithURL;
+    }
+    
+    return { icon, action };
 }
 
 function renderProjects() {
