@@ -428,14 +428,14 @@ function openProject(id) {
     panel.style.display = 'block';
 }
 
-function getFileDetails(filename) {
+function getFileDetails(filename, content) {
     const ext = filename.split('.').pop().toLowerCase();
     
     if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
         return { icon: '🖼️', action: openImageViewer };
     } else if (['mp3', 'wav', 'ogg'].includes(ext)) {
         return { icon: '🎵', action: openMediaPlayer };
-    } else if (['lnk', 'html', 'url'].includes(ext)) {
+    } else if (['lnk', 'html', 'url'].includes(ext) || (content && (content.startsWith('http://') || content.startsWith('https://')))) {
         return { icon: '🔗', action: openIEWithURL };
     } else {
         return { icon: '📄', action: openNotepadWithFile };
@@ -521,7 +521,7 @@ function renderProjects() {
                 item.className = 'file-item';
                 item.tabIndex = 0;
                 
-                const details = getFileDetails(file.name);
+                const details = getFileDetails(file.name, file.content);
                 
                 // Double click to open text file in Notepad
                 item.addEventListener('dblclick', () => {
