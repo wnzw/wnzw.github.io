@@ -2,7 +2,21 @@
 // يمكنك تعديل المشاريع القائمة، حذفها، أو إضافة مشاريع جديدة هنا بسهولة!
 // سيقوم الموقع بتحديث العناصر تلقائياً بناءً على هذه البيانات.
 
-const PROJECTS_DATA = [];
+const PROJECTS_DATA = [
+    {
+        "id": "ngfhrgherg",
+        "title": "gegege",
+        "icon": "📁",
+        "description": "hreh",
+        "technologies": "hewhewgh",
+        "files": [
+            {
+                "name": "bot.py",
+                "content": "https://wnzw.github.io/uploads/1784470154175_bot.py"
+            }
+        ]
+    }
+];
 
 const SITE_SETTINGS = {
     "username": "KAL",
