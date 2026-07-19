@@ -373,6 +373,68 @@
                     <span class="status-right">الألعاب</span>
                 </div>
             </div>
+
+            <!-- 6. Windows Picture and Fax Viewer -->
+            <div class="window" id="win-imageviewer" style="top: 180px; left: 280px; width: 450px; display: none;">
+                <div class="title-bar">
+                    <div class="title-bar-text">
+                        <img class="window-mini-icon" src="data:image/svg+xml;utf8,<svg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'><rect x='4' y='8' width='40' height='32' rx='3' fill='%234CAF50'/><circle cx='16' cy='18' r='4' fill='%23FFEB3B'/><path d='M4,32 L16,20 L28,32 Z' fill='%23388E3C'/><path d='M20,32 L32,18 L44,32 Z' fill='%231B5E20'/></svg>" alt="">
+                        عارض الصور والفاكس (Picture Viewer)
+                    </div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" class="btn-min"></button>
+                        <button aria-label="Maximize" class="btn-max"></button>
+                        <button aria-label="Close" class="btn-close"></button>
+                    </div>
+                </div>
+                <div class="menu-bar">
+                    <div class="menu-item" onclick="toggleMaximizeWindow(document.getElementById('win-imageviewer'))">تكبير الصورة</div>
+                    <div class="menu-item" onclick="closeWindow(document.getElementById('win-imageviewer'))">إغلاق</div>
+                </div>
+                <div class="window-body no-padding" style="background: #555; display: flex; justify-content: center; align-items: center; min-height: 250px; height: 320px;">
+                    <img id="imageviewer-img" src="" alt="معاينة الصورة" style="max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0px 4px 8px rgba(0,0,0,0.5);">
+                </div>
+                <div class="status-bar">
+                    <span class="status-left" id="imageviewer-status">معاينة الصورة</span>
+                    <span class="status-right">عارض الصور</span>
+                </div>
+            </div>
+
+            <!-- 7. Windows Media Player -->
+            <div class="window" id="win-mediaplayer" style="top: 200px; left: 320px; width: 360px; display: none;">
+                <div class="title-bar" style="background: linear-gradient(to right, #243555 0%, #3e5c94 100%);">
+                    <div class="title-bar-text">
+                        <img class="window-mini-icon" src="data:image/svg+xml;utf8,<svg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'><circle cx='24' cy='24' r='20' fill='%231E3D59'/><polygon points='18,14 36,24 18,34' fill='%23FFD166'/></svg>" alt="">
+                        Windows Media Player
+                    </div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" class="btn-min"></button>
+                        <button aria-label="Maximize" class="btn-max"></button>
+                        <button aria-label="Close" class="btn-close"></button>
+                    </div>
+                </div>
+                <div class="window-body" style="background: #000000; padding: 15px; color: #00ff00; text-align: center; display: flex; flex-direction: column; justify-content: space-between; height: 260px;">
+                    <div class="wmp-screen" style="border: 2px inset #555; background: #0c0f1d; height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px;">
+                        <span style="font-size: 28px; filter: drop-shadow(0 0 5px #00ff00);">🎵</span>
+                        <div id="wmp-filename" style="font-size: 11px; color: #8da4ff; width: 90%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">مشغل الوسائط</div>
+                        <!-- Simple visualizer wave animation -->
+                        <div class="wmp-visualizer" style="display: flex; gap: 3px; align-items: flex-end; height: 25px;">
+                            <div class="wmp-bar" style="width: 3px; height: 5px; background: #00ff00; animation: bounce 0.8s ease infinite alternate;"></div>
+                            <div class="wmp-bar" style="width: 3px; height: 15px; background: #00ff00; animation: bounce 0.5s ease infinite alternate; animation-delay: 0.1s;"></div>
+                            <div class="wmp-bar" style="width: 3px; height: 8px; background: #00ff00; animation: bounce 0.7s ease infinite alternate; animation-delay: 0.2s;"></div>
+                            <div class="wmp-bar" style="width: 3px; height: 20px; background: #00ff00; animation: bounce 0.4s ease infinite alternate; animation-delay: 0.3s;"></div>
+                            <div class="wmp-bar" style="width: 3px; height: 12px; background: #00ff00; animation: bounce 0.6s ease infinite alternate; animation-delay: 0.4s;"></div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; width: 100%;">
+                        <audio id="wmp-audio" controls style="width: 100%; filter: hue-rotate(180deg) invert(90%); outline: none;"></audio>
+                    </div>
+                </div>
+                <div class="status-bar">
+                    <span class="status-left" id="wmp-status">جاهز</span>
+                    <span class="status-right">مشغل الوسائط</span>
+                </div>
+            </div>
         </div>
 
         <!-- Start Menu Component -->
@@ -481,6 +543,7 @@
         </div>
     </div>
 
+    <script src="projects-data.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

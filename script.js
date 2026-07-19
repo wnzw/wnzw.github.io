@@ -32,6 +32,55 @@ function openNotepadWithFile(name, content) {
     openWindow('win-notepad');
 }
 
+function openImageViewer(name, url) {
+    const imgEl = document.getElementById('imageviewer-img');
+    const win = document.getElementById('win-imageviewer');
+    const status = document.getElementById('imageviewer-status');
+    if (!imgEl || !win) return;
+    
+    imgEl.src = url;
+    if (status) status.textContent = `معاينة: ${name}`;
+    
+    const titleEl = win.querySelector('.title-bar-text');
+    if (titleEl) {
+        titleEl.innerHTML = `<img class="window-mini-icon" src="data:image/svg+xml;utf8,<svg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'><rect x='4' y='8' width='40' height='32' rx='3' fill='%234CAF50'/><circle cx='16' cy='18' r='4' fill='%23FFEB3B'/><path d='M4,32 L16,20 L28,32 Z' fill='%23388E3C'/></svg>" alt=""> ${name} - عارض الصور والفاكس`;
+    }
+    
+    openWindow('win-imageviewer');
+}
+
+function openMediaPlayer(name, url) {
+    const audioEl = document.getElementById('wmp-audio');
+    const win = document.getElementById('win-mediaplayer');
+    const filenameEl = document.getElementById('wmp-filename');
+    const status = document.getElementById('wmp-status');
+    if (!audioEl || !win) return;
+    
+    audioEl.src = url;
+    audioEl.play().catch(err => console.log("Auto-play blocked or audio source error", err));
+    if (filenameEl) filenameEl.textContent = name;
+    if (status) status.textContent = 'تشغيل...';
+    
+    audioEl.onplay = () => { if (status) status.textContent = 'تشغيل...'; };
+    audioEl.onpause = () => { if (status) status.textContent = 'متوقف مؤقتاً'; };
+    audioEl.onended = () => { if (status) status.textContent = 'انتهى التشغيل'; };
+    
+    openWindow('win-mediaplayer');
+}
+
+function openIEWithURL(name, url) {
+    const win = document.getElementById('win-ie');
+    if (!win) return;
+    
+    const input = win.querySelector('.ie-address-input');
+    if (input) input.value = url;
+    
+    openWindow('win-ie');
+    
+    // Open in new tab since most sites block being loaded in an iframe due to CORS
+    window.open(url, '_blank');
+}
+
 // DOM Elements
 const desktop = document.getElementById('desktop');
 const startBtn = document.getElementById('start-btn');
@@ -92,6 +141,17 @@ function getWindowTitle(win) {
 function closeWindow(win) {
     win.style.display = 'none';
     removeTaskbarTab(win.id);
+    
+    // Stop WMP audio if closed
+    if (win.id === 'win-mediaplayer') {
+        const audio = document.getElementById('wmp-audio');
+        if (audio) {
+            audio.pause();
+            audio.src = '';
+        }
+        const status = document.getElementById('wmp-status');
+        if (status) status.textContent = 'متوقف';
+    }
 }
 
 function minimizeWindow(win) {
@@ -149,6 +209,8 @@ function createTaskbarTab(winId, title) {
     if (winId === 'win-notepad') icon = '📝';
     if (winId === 'win-ie') icon = '🌐';
     if (winId === 'win-minesweeper') icon = '💣';
+    if (winId === 'win-imageviewer') icon = '🖼️';
+    if (winId === 'win-mediaplayer') icon = '🎵';
     
     tab.innerHTML = `<span class="task-icon">${icon}</span> ${title}`;
     
@@ -285,6 +347,20 @@ function openProject(id) {
     panel.style.display = 'block';
 }
 
+function getFileDetails(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+        return { icon: '🖼️', action: openImageViewer };
+    } else if (['mp3', 'wav', 'ogg'].includes(ext)) {
+        return { icon: '🎵', action: openMediaPlayer };
+    } else if (['lnk', 'html', 'url'].includes(ext)) {
+        return { icon: '🔗', action: openIEWithURL };
+    } else {
+        return { icon: '📄', action: openNotepadWithFile };
+    }
+}
+
 function renderProjects() {
     const grid = document.getElementById('projects-grid');
     const statusLeft = document.getElementById('documents-status-left');
@@ -364,9 +440,11 @@ function renderProjects() {
                 item.className = 'file-item';
                 item.tabIndex = 0;
                 
+                const details = getFileDetails(file.name);
+                
                 // Double click to open text file in Notepad
                 item.addEventListener('dblclick', () => {
-                    openNotepadWithFile(file.name, file.content);
+                    details.action(file.name, file.content);
                 });
                 
                 // Touch support (double tap) to open file
@@ -375,7 +453,7 @@ function renderProjects() {
                     const currentTime = new Date().getTime();
                     const tapLength = currentTime - lastTap;
                     if (tapLength < 300 && tapLength > 0) {
-                        openNotepadWithFile(file.name, file.content);
+                        details.action(file.name, file.content);
                         e.preventDefault();
                     }
                     lastTap = currentTime;
@@ -386,7 +464,7 @@ function renderProjects() {
                 });
                 
                 item.innerHTML = `
-                    <div class="file-icon">📄</div>
+                    <div class="file-icon">${details.icon}</div>
                     <span class="file-label">${file.name}</span>
                 `;
                 
@@ -687,16 +765,8 @@ function rebootSite() {
 
 // Initialization and Event Listeners Setup
 document.addEventListener('DOMContentLoaded', () => {
-    // 0. Fetch projects database and render
-    fetch('projects.json')
-        .then(response => response.json())
-        .then(data => {
-            PROJECTS_DATA = data;
-            renderProjects();
-        })
-        .catch(err => {
-            console.error("Error loading projects database:", err);
-        });
+    // 0. Render projects (loaded from projects-data.js)
+    renderProjects();
 
     // 1. Setup clock
     updateClock();
