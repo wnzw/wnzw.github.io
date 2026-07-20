@@ -32,6 +32,12 @@ const SITE_SETTINGS = {
             "icon": "https://raw.githubusercontent.com/wnzw/wnzw.github.io/main/uploads/social_1784511849392_Telegram_logo.svg",
             "url": "https://t.me/IJUSTKAL",
             "desc": "."
+        },
+        {
+            "title": "حسابي التليجرام",
+            "icon": "https://raw.githubusercontent.com/wnzw/wnzw.github.io/main/uploads/social_1784533012462_Telegram_logo.svg",
+            "url": "https://t.me/BJRRR",
+            "desc": "."
         }
     ],
     "desktop_apps": {
