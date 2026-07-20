@@ -1190,9 +1190,27 @@ document.addEventListener('DOMContentLoaded', () => {
         // Drag Setup
         makeWindowDraggable(win);
         
-        // Focus Setup
-        win.addEventListener('mousedown', () => focusWindow(win));
-        win.addEventListener('touchstart', () => focusWindow(win), { passive: true });
+        // Focus Setup on Mousedown / Touchstart
+        win.addEventListener('mousedown', () => {
+            if (!win.classList.contains('active-window')) {
+                focusWindow(win);
+            }
+        });
+        win.addEventListener('touchstart', () => {
+            if (!win.classList.contains('active-window')) {
+                focusWindow(win);
+            }
+        }, { passive: true });
+
+        // Focus-First Guard: Clicking an inactive window brings it to front without triggering inner links/actions
+        win.addEventListener('click', (e) => {
+            if (!win.classList.contains('active-window')) {
+                if (e.target.closest('.title-bar-controls')) return;
+                e.preventDefault();
+                e.stopPropagation();
+                focusWindow(win);
+            }
+        }, true);
         
         // Window Control Buttons Setup
         const btnMin = win.querySelector('.btn-min');
@@ -1204,7 +1222,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btnClose) btnClose.addEventListener('click', (e) => { e.stopPropagation(); closeWindow(win); });
         
         // Register default open window in taskbar
-        if (win.style.display !== 'none') {
+        if (win.style.display !== 'none' && win.style.display !== '') {
             createTaskbarTab(win.id, getWindowTitle(win));
             focusWindow(win);
         }
