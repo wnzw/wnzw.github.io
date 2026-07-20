@@ -23,7 +23,7 @@ const SITE_SETTINGS = {
             "title": "مستنداتي (My Documents)"
         },
         "ie": {
-            "label": "المتصفح (Internet Explorer)",
+            "label": "Internet Explorer",
             "title": "عن المطور - Internet Explorer",
             "header": "التواصل الاجتماعي",
             "subheader": "نورنا باحد شبكات التواصل الاجتماعي"
