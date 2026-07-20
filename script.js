@@ -228,6 +228,56 @@ function openDefaultNotepad() {
     openWindow('win-notepad');
 }
 
+function isCompressedFile(filename) {
+    if (!filename) return false;
+    const ext = filename.split('.').pop().toLowerCase();
+    return ['zip', 'rar', 'tar', 'gz', '7z', 'iso', 'bz2', 'xz', 'tgz'].includes(ext);
+}
+
+function handleSubFileInteraction(name, content) {
+    if (isCompressedFile(name)) {
+        openDownloadFile(name, content);
+    } else {
+        showFileDialogModal(name, content);
+    }
+}
+
+function showFileDialogModal(name, content) {
+    const overlay = document.getElementById('xp-file-dialog-overlay');
+    const nameEl = document.getElementById('xp-file-dialog-name');
+    const iconEl = document.getElementById('xp-file-dialog-icon');
+    const btnOpen = document.getElementById('xp-file-btn-open');
+    const btnDownload = document.getElementById('xp-file-btn-download');
+
+    if (!overlay) return;
+
+    const details = getFileDetails(name, content);
+
+    if (nameEl) nameEl.textContent = name;
+    if (iconEl) iconEl.textContent = details.icon;
+
+    if (btnOpen) {
+        btnOpen.onclick = () => {
+            closeFileDialog();
+            details.action(name, content);
+        };
+    }
+
+    if (btnDownload) {
+        btnDownload.onclick = () => {
+            closeFileDialog();
+            openDownloadFile(name, content);
+        };
+    }
+
+    overlay.style.display = 'flex';
+}
+
+function closeFileDialog() {
+    const overlay = document.getElementById('xp-file-dialog-overlay');
+    if (overlay) overlay.style.display = 'none';
+}
+
 function openNotepadWithFile(name, content) {
     const notepadText = document.getElementById('notepad-text');
     const notepadWin = document.getElementById('win-notepad');
@@ -704,25 +754,22 @@ function renderProjects() {
                 
                 const details = getFileDetails(file.name, file.content);
                 
-                // Double click to open text file in Notepad
-                item.addEventListener('dblclick', () => {
-                    details.action(file.name, file.content);
+                // Single click to open file options / direct download
+                item.addEventListener('click', () => {
+                    item.focus();
+                    handleSubFileInteraction(file.name, file.content);
                 });
                 
-                // Touch support (double tap) to open file
+                // Touch support (double tap / tap) to open file options
                 let lastTap = 0;
                 item.addEventListener('touchend', (e) => {
                     const currentTime = new Date().getTime();
                     const tapLength = currentTime - lastTap;
                     if (tapLength < 300 && tapLength > 0) {
-                        details.action(file.name, file.content);
+                        handleSubFileInteraction(file.name, file.content);
                         e.preventDefault();
                     }
                     lastTap = currentTime;
-                });
-                
-                item.addEventListener('click', () => {
-                    item.focus();
                 });
                 
                 item.innerHTML = `
