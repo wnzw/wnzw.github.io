@@ -30,15 +30,15 @@ const SITE_SETTINGS = {
         },
         "notepad": {
             "label": "السيرة الذاتية (Notepad)",
-            "title": "السيرة_الذاتية.txt - مفكرة"
+            "title": "السيرة_الذاتية.txt"
         },
         "mediaplayer": {
             "label": "Windows Media Player",
             "title": "Windows Media Player"
         },
         "minesweeper": {
-            "label": "كنس الألغام (Minesweeper)",
-            "title": "كنس الألغام (Minesweeper)"
+            "label": "Minesweeper",
+            "title": "Minesweeper"
         }
     }
 };
