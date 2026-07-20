@@ -29,7 +29,7 @@ const SITE_SETTINGS = {
             "subheader": "نورنا باحد شبكات التواصل الاجتماعي"
         },
         "notepad": {
-            "label": "السيرة الذاتية (Notepad)",
+            "label": "السيرة الذاتية",
             "title": "السيرة_الذاتية.txt"
         },
         "mediaplayer": {
