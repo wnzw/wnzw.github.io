@@ -67,7 +67,7 @@ const SITE_SETTINGS = {
         },
         "notepad": {
             "label": "السيرة الذاتية",
-            "title": "السيرة_الذاتية.txtt"
+            "title": "السيرة_الذاتية.txt"
         },
         "mediaplayer": {
             "label": "Windows Media Player",
