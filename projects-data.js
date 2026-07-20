@@ -33,7 +33,7 @@ const SITE_SETTINGS = {
             "label": "Internet Explorer",
             "title": "عن المطور - Internet Explorer",
             "header": "التواصل الاجتماعي",
-            "subheader": "نورنا باحد شبكات التواصل الاجتماعي"
+            "subheader": "جميع حساباتي على التواصل الاجتماعي"
         },
         "notepad": {
             "label": "السيرة الذاتية",
