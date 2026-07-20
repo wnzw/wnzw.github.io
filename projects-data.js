@@ -31,31 +31,7 @@ const SITE_SETTINGS = {
             "title": "قناة التليجرام",
             "icon": "https://raw.githubusercontent.com/wnzw/wnzw.github.io/main/uploads/social_1784511849392_Telegram_logo.svg",
             "url": "https://t.me/IJUSTKAL",
-            "desc": "انضم إلى قناتي الرسمية على التليجرام."
-        },
-        {
-            "title": "GitHub",
-            "icon": "🐙",
-            "url": "https://github.com",
-            "desc": "استعرض أكوادي ومشاريعي البرمجية المفتوحة المصدر."
-        },
-        {
-            "title": "LinkedIn",
-            "icon": "💼",
-            "url": "https://linkedin.com",
-            "desc": "تواصل معي مهنياً واطلع على مسيرتي الأكاديمية والمهنية."
-        },
-        {
-            "title": "بريد إلكتروني",
-            "icon": "✉️",
-            "url": "mailto:email@example.com",
-            "desc": "راسلني لمناقشة فرص العمل، المشاريع، أو التعاون المشترك."
-        },
-        {
-            "title": "X (تويتر سابقاً)",
-            "icon": "🐦",
-            "url": "https://twitter.com",
-            "desc": "تابع أفكاري وتغريداتي حول البرمجة والتقنية الحديثة."
+            "desc": "."
         }
     ],
     "desktop_apps": {
