@@ -29,7 +29,7 @@ const SITE_SETTINGS = {
     "ie_links": [
         {
             "title": "قناة التليجرام",
-            "icon": "https://wnzw.github.io/uploads/social_1784511133866_Telegram_logo.svg",
+            "icon": "https://raw.githubusercontent.com/wnzw/wnzw.github.io/main/uploads/social_1784511849392_Telegram_logo.svg",
             "url": "https://t.me/IJUSTKAL",
             "desc": "."
         }
