@@ -12,7 +12,14 @@ const SITE_SETTINGS = {
     "ram": "16.0 جيجابايت من العزيمة والإصرار",
     "wallpaper": "bliss_wallpaper.jpg",
     "cv_text": ".",
-    "ie_links": [],
+    "ie_links": [
+        {
+            "title": "قناة التليجرام",
+            "icon": "https://wnzw.github.io/uploads/social_1784511133866_Telegram_logo.svg",
+            "url": "https://t.me/IJUSTKAL",
+            "desc": "."
+        }
+    ],
     "desktop_apps": {
         "computer": {
             "label": "جهازي (My Computer)",
