@@ -38,6 +38,12 @@ const SITE_SETTINGS = {
             "icon": "https://raw.githubusercontent.com/wnzw/wnzw.github.io/main/uploads/social_1784533012462_Telegram_logo.svg",
             "url": "https://t.me/BJRRR",
             "desc": "."
+        },
+        {
+            "title": "حسابي الانستقرام",
+            "icon": "https://raw.githubusercontent.com/wnzw/wnzw.github.io/main/uploads/social_1784533233675__Pngtree_instagram_social_media_icon_vector_8704818.png",
+            "url": "https://www.instagram.com/_8kal",
+            "desc": "."
         }
     ],
     "desktop_apps": {
