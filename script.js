@@ -96,19 +96,54 @@ function loadSiteSettings() {
     }
     
     // Apply IE Links
+    const defaultIELinks = [
+        { title: "قناة التليجرام", icon: "data:image/svg+xml;utf8,<svg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'><circle cx='120' cy='120' r='120' fill='%2324A1DE'/><path d='M98 175c-4 0-4-2-5-6l-13-42 96-57c4-3 1-4-3-2L55 116l-37-12c-8-3-8-8 2-12l146-56c7-3 13 2 11 11l-25 117c-2 8-7 10-14 6l-40-30-19 19c-2 2-4 3-8 3z' fill='%23FFF'/></svg>", url: "https://t.me/IJUSTKAL", desc: "انضم إلى قناتي الرسمية على التليجرام." },
+        { title: "GitHub", icon: "🐙", url: "https://github.com", desc: "استعرض أكوادي ومشاريعي البرمجية المفتوحة المصدر." },
+        { title: "LinkedIn", icon: "💼", url: "https://linkedin.com", desc: "تواصل معي مهنياً واطلع على مسيرتي الأكاديمية والمهنية." },
+        { title: "بريد إلكتروني", icon: "✉️", url: "mailto:email@example.com", desc: "راسلني لمناقشة فرص العمل، المشاريع، أو التعاون المشترك." },
+        { title: "X (تويتر سابقاً)", icon: "🐦", url: "https://twitter.com", desc: "تابع أفكاري وتغريداتي حول البرمجة والتقنية الحديثة." }
+    ];
+
+    const linksToRender = (settings.ie_links && Array.isArray(settings.ie_links) && settings.ie_links.length > 0) 
+        ? settings.ie_links 
+        : defaultIELinks;
+
     const ieLinksContainer = document.getElementById('ie-links-container');
-    if (ieLinksContainer && settings.ie_links) {
+    if (ieLinksContainer) {
         ieLinksContainer.innerHTML = '';
-        settings.ie_links.forEach(link => {
-            const a = document.createElement('a');
-            a.href = link.url;
-            a.target = '_blank';
-            a.className = 'ie-card';
-            a.innerHTML = `
-                <span class="ie-card-icon">${link.icon || '🔗'}</span>
-                <h3>${link.title}</h3>
-                <p>${link.desc}</p>
-            `;
+        linksToRender.forEach(link => {
+            try {
+                if (!link || typeof link !== 'object') return;
+                
+                const title = (link.title && typeof link.title === 'string') ? link.title.trim() : 'رابط';
+                const url = (link.url && typeof link.url === 'string') ? link.url.trim() : '#';
+                const desc = (link.desc && typeof link.desc === 'string') ? link.desc.trim() : '';
+                const rawIcon = (link.icon && typeof link.icon === 'string') ? link.icon.trim() : '🔗';
+
+                const isImg = rawIcon && (rawIcon.startsWith('data:image') || rawIcon.startsWith('http://') || rawIcon.startsWith('https://') || rawIcon.startsWith('/') || rawIcon.startsWith('uploads/') || /\.(png|jpg|jpeg|gif|svg|webp|ico)(\?.*)?$/i.test(rawIcon));
+
+                let imgSrc = rawIcon;
+                if (isImg && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:') && !imgSrc.startsWith('/') && !imgSrc.startsWith('uploads/')) {
+                    imgSrc = 'uploads/' + imgSrc;
+                }
+
+                const iconHTML = isImg 
+                    ? `<img class="ie-card-img-icon" src="${imgSrc}" alt="${title}" onerror="this.onerror=null; this.outerHTML='<span class=\\'ie-card-icon\\'>🔗</span>';">` 
+                    : `<span class="ie-card-icon">${rawIcon || '🔗'}</span>`;
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.target = '_blank';
+                a.className = 'ie-card';
+                a.innerHTML = `
+                    ${iconHTML}
+                    <h3>${title}</h3>
+                    <p>${desc}</p>
+                `;
+                ieLinksContainer.appendChild(a);
+            } catch(e) {
+                console.error("Error rendering link:", e);
+            }
         });
     }
     
@@ -116,7 +151,7 @@ function loadSiteSettings() {
     let defaultApps = {
         computer: { label: "جهازي (My Computer)", title: "جهازي (My Computer)" },
         documents: { label: "مستنداتي (My Documents)", title: "مستنداتي (My Documents)" },
-        ie: { label: "المتصفح (Internet Explorer)", title: "عن المطور - Internet Explorer", header: "بوابة التواصل والشبكات الاجتماعية", subheader: "أهلاً بك في صفحتي الشخصية عبر متصفح Internet Explorer الكلاسيكي!" },
+        ie: { label: "المتصفح (Internet Explorer)", title: "عن المطور - Internet Explorer", header: "التواصل الاجتماعي", subheader: "جميع حساباتي على التواصل الاجتماعي" },
         notepad: { label: "السيرة الذاتية (Notepad)", title: "السيرة_الذاتية.txt - مفكرة" },
         mediaplayer: { label: "Windows Media Player", title: "Windows Media Player" },
         minesweeper: { label: "كنس الألغام (Minesweeper)", title: "كنس الألغام (Minesweeper)" }
@@ -165,6 +200,13 @@ function loadSiteSettings() {
     
     const ieSubheader = document.getElementById('ie-page-subheader');
     if (ieSubheader) ieSubheader.textContent = apps.ie.subheader;
+
+    // Apply Start menu labels
+    const startComputer = document.getElementById('start-label-computer');
+    if (startComputer) startComputer.textContent = apps.computer.label;
+
+    const startDocuments = document.getElementById('start-label-documents');
+    if (startDocuments) startDocuments.textContent = apps.documents.label;
 }
 
 function openDefaultNotepad() {
@@ -172,8 +214,15 @@ function openDefaultNotepad() {
     const notepadWin = document.getElementById('win-notepad');
     if (!notepadText || !notepadWin) return;
     
-    const titleEl = notepadWin.querySelector('.title-bar-text');
-    titleEl.innerHTML = `<img class="window-mini-icon" src="data:image/svg+xml;utf8,<svg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'><rect x='8' y='4' width='32' height='40' rx='3' fill='%23ECEFF1' stroke='%2337474F' stroke-width='2'/></svg>" alt=""> السيرة_الذاتية.txt - مفكرة`;
+    let titleSpan = document.getElementById('title-text-notepad');
+    if (!titleSpan) {
+        const titleEl = notepadWin.querySelector('.title-bar-text');
+        if (titleEl) {
+            titleEl.innerHTML = `<img class="window-mini-icon" src="data:image/svg+xml;utf8,<svg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'><rect x='8' y='4' width='32' height='40' rx='3' fill='%23ECEFF1' stroke='%2337474F' stroke-width='2'/></svg>" alt=""> <span id="title-text-notepad">السيرة_الذاتية.txt - مفكرة</span>`;
+        }
+    }
+    
+    loadSiteSettings();
     notepadText.value = defaultCVText;
     
     openWindow('win-notepad');
@@ -980,6 +1029,14 @@ function rebootSite() {
 document.addEventListener('DOMContentLoaded', () => {
     // Load custom site settings
     loadSiteSettings();
+
+    // Live sync when settings are changed in admin panel
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'site_settings' || e.key === 'projects_data') {
+            loadSiteSettings();
+            renderProjects();
+        }
+    });
 
     // 0. Render projects (loaded from projects-data.js)
     renderProjects();

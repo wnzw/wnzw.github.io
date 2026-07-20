@@ -295,10 +295,15 @@
                     <!-- Embedded simulated page -->
                     <div class="ie-content">
                         <div class="ie-header">
-                            <h1 id="ie-page-header">بوابة التواصل والشبكات الاجتماعية</h1>
-                            <p id="ie-page-subheader">أهلاً بك في صفحتي الشخصية عبر متصفح Internet Explorer الكلاسيكي!</p>
+                            <h1 id="ie-page-header">التواصل الاجتماعي</h1>
+                            <p id="ie-page-subheader">جميع حساباتي على التواصل الاجتماعي</p>
                         </div>
                         <div class="ie-links-grid" id="ie-links-container">
+                            <a href="https://t.me/IJUSTKAL" target="_blank" class="ie-card">
+                                <img class="ie-card-img-icon" src="data:image/svg+xml;utf8,<svg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'><circle cx='120' cy='120' r='120' fill='%2324A1DE'/><path d='M98 175c-4 0-4-2-5-6l-13-42 96-57c4-3 1-4-3-2L55 116l-37-12c-8-3-8-8 2-12l146-56c7-3 13 2 11 11l-25 117c-2 8-7 10-14 6l-40-30-19 19c-2 2-4 3-8 3z' fill='%23FFF'/></svg>" alt="قناة التليجرام">
+                                <h3>قناة التليجرام</h3>
+                                <p>انضم إلى قناتي الرسمية على التليجرام.</p>
+                            </a>
                             <a href="https://github.com" target="_blank" class="ie-card">
                                 <span class="ie-card-icon">🐙</span>
                                 <h3>GitHub</h3>
@@ -311,7 +316,7 @@
                             </a>
                             <a href="mailto:email@example.com" class="ie-card">
                                 <span class="ie-card-icon">✉️</span>
-                                <h3>بريد إلكتروني</h3>
+                                <h3 >بريد إلكتروني</h3>
                                 <p>راسلني لمناقشة فرص العمل، المشاريع، أو التعاون المشترك.</p>
                             </a>
                             <a href="https://twitter.com" target="_blank" class="ie-card">
@@ -479,8 +484,8 @@
                 </div>
                 <!-- Right column (system locations) -->
                 <div class="start-right-col">
-                    <div class="start-sys-item" onclick="openWindow('win-documents')">📂 مستنداتي</div>
-                    <div class="start-sys-item" onclick="openWindow('win-computer')">🖥️ جهازي</div>
+                    <div class="start-sys-item" onclick="openWindow('win-documents')">📂 <span id="start-label-documents">مستنداتي</span></div>
+                    <div class="start-sys-item" onclick="openWindow('win-computer')">🖥️ <span id="start-label-computer">جهازي</span></div>
                     <div class="start-sys-item" style="opacity: 0.6; cursor: not-allowed;">🎮 الألعاب</div>
                     <hr class="start-divider">
                     <div class="start-sys-item" style="opacity: 0.6; cursor: not-allowed;">🛠️ لوحة التحكم</div>

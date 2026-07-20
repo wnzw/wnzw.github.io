@@ -685,6 +685,19 @@ body, html {
     font-size: 24px;
 }
 
+.ie-card-img-icon {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    border-radius: 4px;
+    margin-bottom: 4px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.ie-card:hover .ie-card-img-icon {
+    transform: scale(1.15);
+}
+
 .ie-card h3 {
     font-size: 14px;
     color: #0054e3;
