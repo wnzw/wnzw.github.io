@@ -1,5 +1,12 @@
 // Windows XP JavaScript Logic
 
+// Automatic Cache-Busting: Clear stale CacheStorage if present
+if ('caches' in window) {
+    caches.keys().then(function(names) {
+        for (let name of names) caches.delete(name);
+    }).catch(function(e) {});
+}
+
 // Global State
 let activeWindow = null;
 let zIndexCounter = 100;
