@@ -52,12 +52,12 @@ const SITE_SETTINGS = {
     ],
     "desktop_apps": {
         "computer": {
-            "label": "جهازي (My Computer)",
-            "title": "جهازي (My Computer)"
+            "label": "My Computer",
+            "title": "My Computer"
         },
         "documents": {
-            "label": "مستنداتي (My Documents)",
-            "title": "مستنداتي (My Documents)"
+            "label": "My Documents",
+            "title": "My Documents"
         },
         "ie": {
             "label": "Internet Explorer",
