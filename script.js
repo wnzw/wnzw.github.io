@@ -369,17 +369,54 @@ const startMenu = document.getElementById('start-menu');
 const trayClock = document.getElementById('tray-clock');
 const taskbarTasks = document.getElementById('taskbar-tasks');
 
+// Dynamic Window Cascade State
+let windowCascadeIndex = 0;
+
+function calculateNextWindowPosition(win) {
+    const isMobile = window.innerWidth <= 640;
+    
+    if (isMobile) {
+        win.style.left = '3%';
+        win.style.width = '94%';
+        win.style.top = '20px';
+        return;
+    }
+
+    if (win.dataset.hasBeenPositioned === "true") return;
+    win.dataset.hasBeenPositioned = "true";
+
+    const baseTop = 45;
+    const baseLeft = 60;
+    const step = 32;
+    const maxTop = Math.max(100, window.innerHeight - 450);
+    const maxLeft = Math.max(100, window.innerWidth - 550);
+
+    let top = baseTop + (windowCascadeIndex * step);
+    let left = baseLeft + (windowCascadeIndex * step);
+
+    if (top > maxTop || left > maxLeft) {
+        windowCascadeIndex = 0;
+        top = baseTop;
+        left = baseLeft;
+    } else {
+        windowCascadeIndex++;
+    }
+
+    win.style.top = `${top}px`;
+    win.style.left = `${left}px`;
+}
+
 // 1. Z-Index and Focus Management
 function focusWindow(windowEl) {
     if (!windowEl) return;
     
-    // Deactivate current active window styling
+    // Deactivate previous active window
     const currentActive = document.querySelector('.window.active-window');
-    if (currentActive) {
+    if (currentActive && currentActive !== windowEl) {
         currentActive.classList.remove('active-window');
     }
     
-    // Bring to front
+    // Bring window to front
     zIndexCounter += 1;
     windowEl.style.zIndex = zIndexCounter;
     windowEl.classList.add('active-window');
@@ -394,8 +431,19 @@ function openWindow(id) {
     const win = document.getElementById(id);
     if (!win) return;
     
-    // Show window if hidden
+    const isHidden = (win.style.display === 'none' || !win.style.display);
+
+    // Show window
     win.style.display = 'flex';
+    
+    // Calculate initial dynamic cascade placement if opening for first time
+    if (isHidden) {
+        calculateNextWindowPosition(win);
+        // Play smooth pop-in animation
+        win.classList.remove('win-pop');
+        void win.offsetWidth;
+        win.classList.add('win-pop');
+    }
     
     // Focus window
     focusWindow(win);
@@ -409,18 +457,20 @@ function openWindow(id) {
 
 function getWindowTitle(win) {
     const titleTextEl = win.querySelector('.title-bar-text');
-    // Get text content excluding child elements (like mini-icon image/svg)
     let title = '';
-    titleTextEl.childNodes.forEach(node => {
-        if (node.nodeType === Node.TEXT_NODE) {
-            title += node.textContent;
-        }
-    });
+    if (titleTextEl) {
+        titleTextEl.childNodes.forEach(node => {
+            if (node.nodeType === Node.TEXT_NODE) {
+                title += node.textContent;
+            }
+        });
+    }
     return title.trim() || 'نافذة';
 }
 
 function closeWindow(win) {
     win.style.display = 'none';
+    win.classList.remove('active-window');
     removeTaskbarTab(win.id);
     
     // Stop WMP audio if closed
@@ -433,13 +483,38 @@ function closeWindow(win) {
         const status = document.getElementById('wmp-status');
         if (status) status.textContent = 'متوقف';
     }
+
+    // Auto transfer focus to highest remaining open window
+    const openWindows = Array.from(document.querySelectorAll('.window'))
+        .filter(w => w.style.display !== 'none')
+        .sort((a, b) => (parseInt(b.style.zIndex) || 0) - (parseInt(a.style.zIndex) || 0));
+
+    if (openWindows.length > 0) {
+        focusWindow(openWindows[0]);
+    } else {
+        activeWindow = null;
+        updateTaskbarActiveTab(null);
+    }
 }
 
 function minimizeWindow(win) {
     win.style.display = 'none';
+    win.classList.remove('active-window');
     const tab = document.querySelector(`.task-button[data-window-id="${win.id}"]`);
     if (tab) {
         tab.classList.remove('active');
+    }
+
+    // Auto transfer focus to highest remaining open window
+    const openWindows = Array.from(document.querySelectorAll('.window'))
+        .filter(w => w.style.display !== 'none')
+        .sort((a, b) => (parseInt(b.style.zIndex) || 0) - (parseInt(a.style.zIndex) || 0));
+
+    if (openWindows.length > 0) {
+        focusWindow(openWindows[0]);
+    } else {
+        activeWindow = null;
+        updateTaskbarActiveTab(null);
     }
 }
 
@@ -476,7 +551,6 @@ function toggleMaximizeWindow(win) {
 
 // 3. Taskbar Management
 function createTaskbarTab(winId, title) {
-    // Check if tab already exists
     let tab = document.querySelector(`.task-button[data-window-id="${winId}"]`);
     if (tab) return;
     
@@ -484,7 +558,6 @@ function createTaskbarTab(winId, title) {
     tab.className = 'task-button';
     tab.setAttribute('data-window-id', winId);
     
-    // Get icon representation
     let icon = '📂';
     if (winId === 'win-computer') icon = '💻';
     if (winId === 'win-notepad') icon = '📝';
@@ -495,7 +568,6 @@ function createTaskbarTab(winId, title) {
     
     tab.innerHTML = `<span class="task-icon">${icon}</span> ${title}`;
     
-    // Clicking task button toggles minimize / restore / focus
     tab.addEventListener('click', () => {
         const win = document.getElementById(winId);
         if (!win) return;
@@ -523,7 +595,7 @@ function removeTaskbarTab(winId) {
 
 function updateTaskbarActiveTab(activeWinId) {
     document.querySelectorAll('.task-button').forEach(tab => {
-        if (tab.getAttribute('data-window-id') === activeWinId) {
+        if (activeWinId && tab.getAttribute('data-window-id') === activeWinId) {
             tab.classList.add('active');
         } else {
             tab.classList.remove('active');
@@ -539,8 +611,15 @@ function makeWindowDraggable(win) {
     titleBar.addEventListener('mousedown', dragMouseDown);
     titleBar.addEventListener('touchstart', dragTouchStart, { passive: false });
     
+    // Double click titlebar to maximize / restore
+    titleBar.addEventListener('dblclick', (e) => {
+        if (!e.target.closest('.title-bar-controls')) {
+            toggleMaximizeWindow(win);
+        }
+    });
+    
     function dragMouseDown(e) {
-        if (win.classList.contains('maximized')) return;
+        if (win.classList.contains('maximized') || e.target.closest('.title-bar-controls')) return;
         e.preventDefault();
         focusWindow(win);
         mouseX = e.clientX;
@@ -550,7 +629,7 @@ function makeWindowDraggable(win) {
     }
     
     function dragTouchStart(e) {
-        if (win.classList.contains('maximized')) return;
+        if (win.classList.contains('maximized') || e.target.closest('.title-bar-controls')) return;
         focusWindow(win);
         const touch = e.touches[0];
         mouseX = touch.clientX;
@@ -569,13 +648,15 @@ function makeWindowDraggable(win) {
         const top = win.offsetTop - posY;
         const left = win.offsetLeft - posX;
         
-        // Prevent window from going offscreen completely
-        win.style.top = `${Math.max(0, top)}px`;
-        win.style.left = `${left}px`;
+        const maxTop = window.innerHeight - 50;
+        const maxLeft = window.innerWidth - 80;
+        const minLeft = -win.offsetWidth + 80;
+
+        win.style.top = `${Math.min(maxTop, Math.max(0, top))}px`;
+        win.style.left = `${Math.min(maxLeft, Math.max(minLeft, left))}px`;
     }
     
     function elementTouchDrag(e) {
-        // Prevent scroll
         e.preventDefault();
         const touch = e.touches[0];
         posX = mouseX - touch.clientX;
@@ -586,7 +667,11 @@ function makeWindowDraggable(win) {
         const top = win.offsetTop - posY;
         const left = win.offsetLeft - posX;
         
-        win.style.top = `${Math.max(0, top)}px`;
+        const maxTop = window.innerHeight - 50;
+        const maxLeft = window.innerWidth - 80;
+        const minLeft = -win.offsetWidth + 80;
+
+        win.style.top = `${Math.min(maxTop, Math.max(0, top))}px`;
         win.style.left = `${left}px`;
     }
     
